@@ -3,9 +3,9 @@
 An insight matrix is a tool to discover relationships between items. If you
 take a set of items, and compare every item against every item, you get a
 similarity matrix. Then you can use hierarchical clustering on that similarity
-matrix to automatically extract groups. [I put together these notes to explain
-how this kind of clustering works in more
-detail](http://johnjung.us/hierarchical-clustering.pdf).
+matrix to automatically extract groups. [I put together these notes for an
+overview of this kind of
+clustering](http://johnjung.us/hierarchical-clustering.pdf).
 
 This program takes an Excel spreadsheet with similarity information as input.
 Then it returns as output a copy of that spreadsheet with a new, sorted
