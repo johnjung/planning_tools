@@ -20,7 +20,7 @@ Programmatic technques should be appropriate for even larger groups.
 ```
 docker build -t insight_matrix https://github.com/johnjung/insight_matrix.git
 docker run --rm -it -p 5000:5000 insight_matrix start
-curl -X POST -F 'spreadsheet=@test_data/fruits.xlsx' http://0.0.0.0:5000/sort
+curl -X POST -F 'spreadsheet=@test_data/fruits.xlsx' http://0.0.0.0:5000/sort > sorted_matrix.xlsx
 ```
 
 ## Contributing
