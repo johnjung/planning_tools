@@ -157,11 +157,13 @@ def sort_insight_matrix():
   return Response("{'ok': '" + ' '.join(D['leaves']) +  "'}", status=200, mimetype='application/json')
 
   # return the workbook to the user. 
+  '''
   bio = io.BytesIO(save_virtual_workbook(workbook))
   send_file(
     bio,
     mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
   )
+  '''
 
 if __name__ == '__main__':
   app.run(debug=True, host='0.0.0.0')
