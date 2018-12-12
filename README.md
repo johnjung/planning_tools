@@ -11,4 +11,5 @@ spreadsheet to the user.
 ```
 docker build -t insight_matrix https://github.com/johnjung/insight_matrix.git
 docker run --rm -it -p 5000:5000 insight_matrix start
+curl -X POST -F 'spreadsheet=@test_data/correct_matrix_with_labels.xlsx' http://0.0.0.0:5000/sort
 ```
