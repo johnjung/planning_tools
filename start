@@ -157,7 +157,7 @@ def sort_insight_matrix():
   # return the workbook to the user. 
   bio = io.BytesIO(save_virtual_workbook(workbook))
   bio.seek(0)
-  send_file(
+  return send_file(
     bio,
     as_attachment=True,
     attachment_filename='out.xlsx',
