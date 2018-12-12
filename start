@@ -139,9 +139,9 @@ def sort_insight_matrix():
   if not (filestorage.filename.endswith('.xlsx')):
     return Response("{'error': 'Unsupported file type'}", status=400, mimetype='application/json')
 
+  workbook = openpyxl.load_workbook(filestorage, data_only=True)
   return Response("{'ok': 'made it...'}", status=200, mimetype='application/json')
 
-  workbook = openpyxl.load_workbook(filestorage, data_only=True)
   worksheet = workbook.active
   validate_worksheet(worksheet)
   data = get_worksheet_data(worksheet)
