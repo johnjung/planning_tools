@@ -11,9 +11,9 @@ This program takes an Excel spreadsheet with similarity information as input.
 Then it returns as output a copy of that spreadsheet with a new, sorted
 worksheet attached.
 
-For smaller sets you can do pairwise comparisons manually. I like to do card
-sorts to collect similarity data when sets have up to about a hundred items.
-Programmatic technques should be appropriate for even larger groups. 
+For small sets of items you can do pairwise comparisons manually. I like to do
+card sorts to collect similarity data when sets have up to about a hundred
+items.  Programmatic techniques should be appropriate for even larger groups. 
 
 ## Quickstart
 
