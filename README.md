@@ -1,15 +1,39 @@
 # insight_matrix
 
-An insight matrix is a symmetric matrix...
+An insight matrix is a tool to discover relationships between items. If you
+take a set of items, and compare every item against every item, you get a
+similarity matrix. Then you can use hierarchical clustering on that similarity
+matrix to automatically extract groups. [I put together these notes to explain
+how this kind of clustering works in more
+detail](http://johnjung.us/hierarchical-clustering.pdf).
 
-I use the hierarchical clustering from the numpy python library to get a sort
-order for the matrix.  Then I reorder the matrix and return a reordered Excel
-spreadsheet to the user. 
+This program takes an Excel spreadsheet with similarity information as input.
+Then it returns as output a copy of that spreadsheet with a new, sorted
+worksheet attached.
+
+For smaller sets you can do pairwise comparisons manually. I like to do card
+sorts to collect similarity data when sets have up to about a hundred items.
+Programmatic technques should be appropriate for even larger groups. 
 
 ## Quickstart
 
 ```
 docker build -t insight_matrix https://github.com/johnjung/insight_matrix.git
 docker run --rm -it -p 5000:5000 insight_matrix start
-curl -X POST -F 'spreadsheet=@test_data/correct_matrix_with_labels.xlsx' http://0.0.0.0:5000/sort
+curl -X POST -F 'spreadsheet=@test_data/fruits.xlsx' http://0.0.0.0:5000/sort
 ```
+
+## Contributing
+
+Please contact the author with pull requests, bug reports, and feature
+requests.
+
+## Author
+
+John Jung
+
+## Acknowledgements
+
+Vijay Kumar, professor at the Institute of Design, first introduced me to this
+technique. You can read about it and other methods in his book, [101 Design
+Methods](http://www.101designmethods.com).
