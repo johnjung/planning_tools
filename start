@@ -154,16 +154,15 @@ def sort_insight_matrix():
   # add a reordered worksheet.
   add_reordered_worksheet(workbook, D['leaves'])
 
-  return Response("{'data': '" + ' '.join([str(l) for l in D['leaves']]) + "'}", status=200, mimetype='application/json')
-
-  '''
   # return the workbook to the user. 
   bio = io.BytesIO(save_virtual_workbook(workbook))
+  bio.seek(0)
   send_file(
     bio,
+    as_attachment=True,
+    attachment_filename='out.xlsx',
     mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
   )
-  '''
 
 if __name__ == '__main__':
   app.run(debug=True, host='0.0.0.0')
