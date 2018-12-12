@@ -123,42 +123,44 @@ def add_reordered_worksheet(workbook, index_order):
       new_worksheet[column_letter + str(y+2)] = data[index_order[y]][index_order[x]]
 
 
+app = Flask(__name__) 
+app.config['UPLOAD_FOLDER'] = '/tmp'
+
+@app.route('/sort', methods=['POST'])
+def sort_insight_matrix():
+  if 'spreadsheet' not in request.files:
+    return Response("{'error': 'No spreadsheet part'}", status=400, mimetype='application/json')
+
+  filestorage = request.files['spreadsheet']
+
+  if filestorage.filename == '':
+    return Response("{'error': 'No selected file'}", status=400, mimetype='application/json')
+
+  if not (filestorage.filename.endswith('.xlsx')):
+    return Response("{'error': 'Unsupported file type'}", status=400, mimetype='application/json')
+
+  workbook = openpyxl.load_workbook(filestorage, data_only=True)
+  worksheet = workbook.active
+  validate_worksheet(worksheet)
+  data = get_worksheet_data(worksheet)
+
+  # build a dendrogram.
+  D = dendrogram(linkage(data, 'single'),
+                 distance_sort='descending',
+                 no_plot=True,
+                 orientation='top',
+                 show_leaf_counts=True)
+
+  # add a reordered worksheet.
+  add_reordered_worksheet(workbook, D['leaves'])
+
+  # return the workbook to the user. 
+  bio = io.BytesIO(save_virtual_workbook(workbook))
+  bio.seek(0)
+  send_file(
+    bio,
+    mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+  )
+
 if __name__ == '__main__':
-  app = Flask(__name__) 
-  app.config['UPLOAD_FOLDER'] = '/tmp'
-  
-  @app.route('/sort', methods=['POST'])
-  def cluster():
-    if 'spreadsheet' not in request.files:
-      return Response("{'error': 'No spreadsheet part'}", status=400, mimetype='application/json')
-  
-    filestorage = request.files['spreadsheet']
-  
-    if filestorage.filename == '':
-      return Response("{'error': 'No selected file'}", status=400, mimetype='application/json')
-  
-    if not (filestorage.filename.endswith('.xlsx')):
-      return Response("{'error': 'Unsupported file type'}", status=400, mimetype='application/json')
-
-    workbook = openpyxl.load_workbook(filestorage, data_only=True)
-    worksheet = workbook.active
-    validate_worksheet(worksheet)
-    data = get_worksheet_data(worksheet)
-  
-    # build a dendrogram.
-    D = dendrogram(linkage(data, 'single'),
-                   distance_sort='descending',
-                   no_plot=True,
-                   orientation='top',
-                   show_leaf_counts=True)
-  
-    # add a reordered worksheet.
-    add_reordered_worksheet(workbook, D['leaves'])
-
-    # return the workbook to the user. 
-    bio = io.BytesIO(save_virtual_workbook(workbook))
-    bio.seek(0)
-    send_file(
-      bio,
-      mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
-    )
+  app.run(debug=True, host='0.0.0.0')
