@@ -23,7 +23,7 @@ docker run --rm -it -p 5000:5000 insight_matrix start
 curl -X POST -F 'spreadsheet=@test_data/fruits.xlsx' http://0.0.0.0:5000/sort > sorted_matrix.xlsx
 ```
 
-## TODO
+## To do
 
 Look at ways to use graphs for clustering. [These slides describe some algorithms](https://www.csc2.ncsu.edu/faculty/nfsamato/practical-graph-mining-with-R/slides/pdf/Graph_Cluster_Analysis.pdf).
 
