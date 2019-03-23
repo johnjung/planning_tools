@@ -1,41 +1,76 @@
 import unittest
-from index.py import validate_worksheet
+from insight_matrix import InsightMatrix
+
 
 class TestInsightMatrix(unittest.TestCase):
-  def test_correct_matrix_with_labels(self):
-    """A correctly formed matrix should validate without raising an exception.
-    """
-    try:
-      validate_worksheet(self.load_worksheet('test_data/correct_matrix_with_labels.xlsx'))
-    except ExceptionType:
-      self.fail()
+  def __init__(self, *args, **kwargs):
+    super().__init__(*args, **kwargs)
 
-  def test_correct_matrix_without_labels(self):
-    """A correctly formed matrix should validate without raising an exception.
-    """
-    try:
-      validate_worksheet(self.load_worksheet('test_data/correct_matrix_without_labels.xlsx'))
-    except ExceptionType:
-      self.fail()
+    self.symmetric_matrix = InsightMatrix()
+    f = open('test_data/symmetric.csv')
+    self.symmetric_matrix.import_from_csv(f)
+    f.close()
 
-  def test_incorrect_matrix_non_square(self):
-    """A non-square matrix should raise an exception.
+    self.nonsymmetric_matrix = InsightMatrix()
+    f = open('test_data/nonsymmetric.csv')
+    self.nonsymmetric_matrix.import_from_csv(f)
+    f.close()
+ 
+ 
+  def test_import_from_csv(self):
+    """import should work correctly.
     """
-    with self.assertRaises(AssertionError):
-      validate_worksheet(self.load_worksheet('test_data/incorrect_matrix_non_square.xlsx'))
+    self.assertTrue(len(self.symmetric_matrix.x_labels) == 3)
+    self.assertTrue(len(self.symmetric_matrix.y_labels) == 3)
+    self.assertEqual(self.symmetric_matrix.data.shape, (3, 3))
 
-  def test_incorrect_matrix_non_symmetrical(self):
-    """A non-symmeteric matrix should raise an exception.
-    """
-    with self.assertRaises(AssertionError):
-      validate_worksheet(self.load_worksheet('test_data/incorrect_matrix_non_symmetrical.xlsx'))
+    self.assertEqual(self.nonsymmetric_matrix.x_labels, ['cheap', 'good'])
+    self.assertEqual(self.nonsymmetric_matrix.y_labels, ['aldi', 'trader joes', 'whole foods'])
+    self.assertEqual(self.nonsymmetric_matrix.data.shape, (3, 2))
 
-  def load_worksheet(path):
-    """Retrieve worksheets for testing. 
+ 
+  def test_width(self):
+    self.assertEqual(self.nonsymmetric_matrix.width(), 2)
+
+
+  def test_height(self):
+    self.assertEqual(self.nonsymmetric_matrix.height(), 3)
+
+
+  def test_max(self):
+    self.assertEqual(self.symmetric_matrix.max(), 1.0)
+    self.assertEqual(self.nonsymmetric_matrix.max(), 1.0)
+
+
+  def test_is_symmetric(self):
+    """is_symmetric() should correctly identify symmetric matrices.
     """
-    workbook = openpyxl.load_workbook(path, data_only=True)
-    return workbook.active
+    self.assertTrue(self.symmetric_matrix.is_symmetric())
+    self.assertFalse(self.nonsymmetric_matrix.is_symmetric())
+
+
+  def test_get_symmetric_index_pairs(self):
+    self.assertEqual(
+      self.symmetric_matrix.get_symmetric_index_pairs(True),
+      [(0, 0), (0, 1), (0, 2), (1, 1), (1, 2), (2, 2)]
+    )
+    self.assertEqual(
+      self.symmetric_matrix.get_symmetric_index_pairs(False),
+      [(0, 0), (1, 0), (1, 1), (2, 0), (2, 1), (2, 2)]
+    )
+
+
+  def test_randomize(self):
+    fruits_and_vegetables = InsightMatrix()
+    f = open('sample_data/fruits_and_vegetables.csv')
+    fruits_and_vegetables.import_from_csv(f)
+    f.close()
+
+    self.assertEqual(
+      fruits_and_vegetables.x_labels,
+      fruits_and_vegetables.y_labels
+    )
+ 
 
 if __name__ == '__main__':    
   unittest.main()
-  
