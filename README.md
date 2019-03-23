@@ -179,6 +179,10 @@ $ cat sample_data/fruits_and_vegetables.csv | ./insight_matrix fill --upper - | 
 $ cat sample_data/fruits_and_vegetables.csv | ./insight_matrix fill --upper - | ./insight_matrix cluster --linkage_method=average - > clustered_data.csv
 ```
 
+## To do
+
+Look at ways to use graphs for clustering. [These slides describe some algorithms](https://www.csc2.ncsu.edu/faculty/nfsamato/practical-graph-mining-with-R/slides/pdf/Graph_Cluster_Analysis.pdf).
+
 ## Contributing
 
 Please contact the author with pull requests, bug reports, and feature
