@@ -14,6 +14,8 @@
                     weighted
                     median
                     ward
+
+    source:         yaml
 """
 
 import csv
@@ -21,13 +23,100 @@ import io
 import numpy
 import random
 import sys
+import yaml
+
 from docopt import docopt
 from scipy.cluster.hierarchy import dendrogram, linkage  
 
 
-class InsightMatrix:
+class Similarity:
   def __init__(self):
-    """Initialize the InsightMatrix object.
+    self.records = None
+    self.fields = None
+
+
+  def load_yaml(self, f):
+    """Load similarity data from a YAML file.
+
+       Parameters:
+         f -- a file-like object.
+    """
+    data = yaml.safe_load(f)
+    self.records = data['records']
+    self.fields = data['fields']
+
+
+  def field_similarity(self, a, b, field):
+    """Get an unweighted similarity score between two fields.
+
+       Parameters:
+         a -- a string, field label for the first record.
+         b -- a string, field label for the second record.
+
+       Returns: a float between 0.0 and 1.0, inclusive. 
+    """
+    if self.fields[field]['field_type'] == 'discrete':
+      return float(self.records[a][field] == self.records[b][field])
+    else:
+      d = self.fields[field]['no_match_difference'] - \
+          self.fields[field]['match_difference']
+      n = self.fields[field]['no_match_difference'] - \
+          abs(float(self.records[a][field]) - float(self.records[b][field]))
+      if n < 0.0:
+        n = 0.0
+      if n > d:
+        n = d
+      return n / d
+
+           
+  def record_similarity(self, a, b):
+    """Get a weighted similarity score between two records.
+
+       Parameters:
+         a -- a string, field label for the first record.
+         b -- a string, field label for the second record.
+
+       Returns: a float between 0.0 and 1.0, inclusive. 
+    """
+    scores = []
+    for field in self.records[a].keys():
+      scores.append(
+        (
+          self.field_similarity(a, b, field), 
+          self.fields[field]['weight']
+        )
+      )
+
+    match = sum([score * weight for score, weight in scores])
+    no_match = sum([(1.0 - score) * weight for score, weight in scores])
+    return match / (match + no_match)
+
+
+  def csv(self):
+    """Output a similarity matrix in CSV format.
+
+       Returns: a string with CSV data.
+    """
+    output = io.StringIO()
+    writer = csv.writer(output)
+    labels = sorted(self.records.keys())
+
+    # x labels.
+    writer.writerow([''] + labels)
+
+    # y labels and data.
+    for y, y_label in enumerate(labels):
+      row = [labels[y]]
+      for x_label in labels:
+        row.append(self.record_similarity(y_label, x_label))
+      writer.writerow(row)
+
+    return output.getvalue()
+    
+
+class Matrix:
+  def __init__(self):
+    """Initialize the Matrix object.
     """
     self.x_labels = [] # list of strings.
     self.y_labels = [] # list of strings.
@@ -220,24 +309,24 @@ class InsightMatrix:
     max_y_label_size = max([len(l) for l in self.y_labels])
 
     # build a 2d array of double spaces with enough room for x and y labels. 
-    output = [['  ' for i in range(max_x_label_size + 1 + self.width())] for j in range(max_y_label_size + 1 + self.height())]
+    output = [['  ' for i in range(max_y_label_size + 1 + self.width())] for j in range(max_x_label_size + 1 + self.height())]
 
     # add x labels.
     for x, l in enumerate(self.x_labels):
       label_size = len(l)
       for y, c in enumerate(l):
-        output[max_y_label_size - label_size + y][max_y_label_size + 1 + x] = ' ' + c
+        output[max_x_label_size - label_size + y][max_y_label_size + 1 + x] = ' ' + c
 
     # add y labels.
     for y, l in enumerate(self.y_labels):
       label_size = len(l)
       for x, c in enumerate(l):
-        output[max_x_label_size + 1 + y][(max_x_label_size - label_size) + x] = ' ' + c
+        output[max_x_label_size + 1 + y][(max_y_label_size - label_size) + x] = ' ' + c
 
     # add data.
     for y, row in enumerate(self.data.tolist()):
       for x, cell in enumerate(row):
-        output[max_y_label_size + 1 + y][max_x_label_size + 1 + x] = ' ' + ' .,:-=+*#%@'[int(cell * 10)]
+        output[max_x_label_size + 1 + y][max_y_label_size + 1 + x] = ' ' + ' .,:-=+*#%@'[int(cell * 10)]
 
     return '\n'.join([''.join(r) for r in output]) + '\n'
 
@@ -245,26 +334,36 @@ class InsightMatrix:
 if __name__ == '__main__':
   options = docopt(__doc__)
 
-  m = InsightMatrix()
-
-  if '-' in options:
-    m.import_from_csv(sys.stdin)
-
   if options['build']:
-    raise NotImplementedError
+    s = Similarity()
+    s.load_yaml(sys.stdin)
+    sys.stdout.write(s.csv())
+    sys.exit()
   elif options['cluster']:
+    m = Matrix()
+    if '-' in options:
+      m.import_from_csv(sys.stdin)
     if options['--linkage_method']:
       m.cluster(options['--linkage_method'])
     else:
       m.cluster()
   elif options['fill']:
+    m = Matrix()
+    if '-' in options:
+      m.import_from_csv(sys.stdin)
     if options['--upper']:
       m.fill(True)
     elif options['--lower']:
       m.fill(False)
   elif options['randomize']:
+    m = Matrix()
+    if '-' in options:
+      m.import_from_csv(sys.stdin)
     m.randomize()
   elif options['show']:
+    m = Matrix()
+    if '-' in options:
+      m.import_from_csv(sys.stdin)
     sys.stdout.write(m.ascii())
     sys.exit()
   sys.stdout.write(m.csv())
