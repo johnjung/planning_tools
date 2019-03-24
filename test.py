@@ -1,17 +1,17 @@
 import unittest
-from insight_matrix import InsightMatrix
+from insight_matrix import Matrix
 
 
-class TestInsightMatrix(unittest.TestCase):
+class TestMatrix(unittest.TestCase):
   def __init__(self, *args, **kwargs):
     super().__init__(*args, **kwargs)
 
-    self.symmetric_matrix = InsightMatrix()
+    self.symmetric_matrix = Matrix()
     f = open('test_data/symmetric.csv')
     self.symmetric_matrix.import_from_csv(f)
     f.close()
 
-    self.nonsymmetric_matrix = InsightMatrix()
+    self.nonsymmetric_matrix = Matrix()
     f = open('test_data/nonsymmetric.csv')
     self.nonsymmetric_matrix.import_from_csv(f)
     f.close()
@@ -61,7 +61,7 @@ class TestInsightMatrix(unittest.TestCase):
 
 
   def test_randomize(self):
-    fruits_and_vegetables = InsightMatrix()
+    fruits_and_vegetables = Matrix()
     f = open('sample_data/fruits_and_vegetables.csv')
     fruits_and_vegetables.import_from_csv(f)
     f.close()

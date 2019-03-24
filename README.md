@@ -27,7 +27,7 @@ $ python insight_matrix.py --help
 
 ### View some sample data in the terminal.
 ```
-$ cat sample_data/fruits_and_vegetables.csv | ./insight_matrix show -
+$ cat sample_data/fruits_and_vegetables.csv | ./insight_matrix.py show -
 
                                                    s                                  
                                          r         t                                  
@@ -77,7 +77,7 @@ $ cat sample_data/fruits_and_vegetables.csv | ./insight_matrix show -
 
 ### Fill the upper triangle with data from the lower triangle.
 ```
-$ cat sample_data/fruits_and_vegetables.csv | ./insight_matrix fill --upper - | ./insight_matrix show -
+$ cat sample_data/fruits_and_vegetables.csv | ./insight_matrix.py fill --upper - | ./insight_matrix.py show -
 
                                                    s                                  
                                          r         t                                  
@@ -127,7 +127,7 @@ $ cat sample_data/fruits_and_vegetables.csv | ./insight_matrix fill --upper - | 
 
 ### Cluster data.
 ```
-$ cat sample_data/fruits_and_vegetables.csv | ./insight_matrix fill --upper - | ./insight_matrix cluster --linkage_method=average - | ./insight_matrix show -
+$ cat sample_data/fruits_and_vegetables.csv | ./insight_matrix.py fill --upper - | ./insight_matrix.py cluster --linkage_method=average - | ./insight_matrix.py show -
 
                                              s                                        
                                            r t                                        
@@ -176,7 +176,7 @@ $ cat sample_data/fruits_and_vegetables.csv | ./insight_matrix fill --upper - | 
 
 ### Get clustered data as CSV. 
 ```
-$ cat sample_data/fruits_and_vegetables.csv | ./insight_matrix fill --upper - | ./insight_matrix cluster --linkage_method=average - > clustered_data.csv
+$ cat sample_data/fruits_and_vegetables.csv | ./insight_matrix.py fill --upper - | ./insight_matrix.py cluster --linkage_method=average - > clustered_data.csv
 ```
 
 ## To do
