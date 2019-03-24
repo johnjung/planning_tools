@@ -3,11 +3,18 @@
     insight_matrix build [--source=<format>] -
     insight_matrix cluster [--linkage_method=<linkage_method>] -
     insight_matrix fill [(--upper|--lower)] -
+    insight_matrix graph_cluster [--engine=<engine>] -
     insight_matrix randomize -
     insight_matrix show -
     insight_matrix (--help)
 
    Arguments:
+    engine:         dot
+                    neato
+                    fdp
+                    twopi
+                    circo
+
     linkage_method: single
                     complete
                     average
@@ -19,6 +26,7 @@
 """
 
 import csv
+import graphviz
 import io
 import numpy
 import random
@@ -331,6 +339,17 @@ class Matrix:
     return '\n'.join([''.join(r) for r in output]) + '\n'
 
 
+  def graph(self, cutoff, engine):
+    g = graphviz.Graph(engine=engine)
+    g.attr(overlap='false')
+    for x, y in self.get_symmetric_index_pairs():
+      if x == y:
+        continue
+      if self.data[y, x] >= cutoff:
+        g.edge(self.y_labels[y], self.x_labels[x])
+    g.view()
+
+
 if __name__ == '__main__':
   options = docopt(__doc__)
 
@@ -355,6 +374,11 @@ if __name__ == '__main__':
       m.fill(True)
     elif options['--lower']:
       m.fill(False)
+  elif options['graph_cluster']:
+    m = Matrix()
+    if '-' in options:
+      m.import_from_csv(sys.stdin)
+    m.graph(0.5, options['--engine'])
   elif options['randomize']:
     m = Matrix()
     if '-' in options:
