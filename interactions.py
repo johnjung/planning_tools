@@ -1,4 +1,5 @@
 import csv
+import math
 import sys
 
 class Interactions:
@@ -171,15 +172,27 @@ class Interactions:
     if (a_neg and a >= 0.0) or (a_nil and a != 0) or (a_pos and a <= 0) or \
        (b_neg and b >= 0.0) or (b_nil and b != 0) or (b_pos and b <= 0):
       return 0.0
-  
-    if a_nil and b_nil:
-      return float(a == 0 and b == 0)
-    elif a_nil:
-      return abs(b) / pos_max
-    elif b_nil:
-      return abs(a) / pos_max
+
+    r = 1.0 * pos_max - neg_min
+
+    # Several of the functions below have been altered from the ones described
+    # in Structured Planning on p. 137. Those formulas seem to produce results
+    # outside of 0.0 to 1.0. The formulas below works for the chart on p. 140.
+    if a_pos and b_nil:
+      # altered from S.P.
+      return 1.0 - ((r / 2 - a) / (r / 2))
+    elif a_pos and b_neg:
+      return abs(a - b) / r
+    elif a_pos and b_pos:
+      # altered from S.P.
+      return (a + b) / r
+    elif a_neg and b_pos:
+      return abs(a - b) / r
+    elif a_nil and b_pos:
+      # altered from S.P.
+      return 1.0 - ((r / 2 - b) / (r / 2))
     else:
-      return abs(a - b) / (pos_max - neg_min)
+      raise ValueError
 
 
   def balance(self, a, b):
@@ -223,12 +236,15 @@ class Interactions:
         n.append(1.0 * self.weights[i] * self.var_int(
           **kwargs_base, **kwargs)
         )
+        d.append(1.0 * self.weights[i] * math.ceil(self.var_int(
+          **kwargs_base, **kwargs)
+        ))
       for a_arg, b_arg in self.mappings[variation]['d'].difference(filter):
         kwargs = {a_arg: True, b_arg: True}
         d.append(1.0 * self.weights[i] * self.var_int(
           **kwargs_base, **kwargs))
 
-    return 1.0 * sum(n) / sum(n) + sum(d)
+    return 1.0 * sum(n) / sum(d)
   
 
   def interaction(self, a, b, variation='conflict + reinforcement'):
@@ -243,6 +259,6 @@ class Interactions:
       skews_b = self.filtered_interaction(a, b, variation, set((('a_pos', 'b_nil'),
                                                                 ('a_pos', 'b_neg'))))
       balance = self.balance(a, b)
-      return (1 - balance) * neutral + balance * skews_a + balance * skews_b / (1 + balance)
+      return (((1 - balance) * neutral) + balance * skews_a + balance * skews_b) / (1 + balance)
     else:
       return self.filtered_interaction(a, b, variation)

@@ -24,8 +24,8 @@ class TestInteractions(unittest.TestCase):
     self.interactions.import_from_csv(csv_file)
 
     csv_file2 = io.StringIO((',v1,v2,v3,v4,v5,v6,v7\n'
-                             'a,-2,0,1,2,0,1,2\n'
-                             'b,2,0,-2,-1,2,0,2\n'
+                             'a,-2,0,1,2,0,1,1\n'
+                             'b,2,0,-2,-1,2,0,1\n'
                              ',,,,,,,,,\n'
                              ',1,2,1,3,3,2,1\n'
                              ',-2,-2,-2,-2,-2,-2,-4\n'
@@ -119,39 +119,60 @@ class TestInteractions(unittest.TestCase):
       self.interactions.var_int(1, 0, a_pos=True, b_nil=True),
       0.5
     )
+    self.assertEqual(
+      self.interactions.var_int(1, 1, neg_min=-4, pos_max=4, a_pos=True, b_pos=True),
+      0.25
+    )
 
 
-  def test_filtred_interaction(self):
+  def test_filtered_interaction(self):
     """Example from Structured Planning by Owens, pg. 141
     """
-    self.assertEqual(
+    self.assertAlmostEqual(
       self.interactions2.filtered_interaction(0, 1),
-      0.425
+      0.425,
+      places=3
     )
-    self.assertEqual(
+    self.assertAlmostEqual(
       self.interactions2.filtered_interaction(
         0,
         1,
         filter=set((('a_neg', 'b_pos'),
                     ('a_nil', 'b_pos')))
       ), 
-      0.542
+      0.542,
+      places=3
     )
-    self.assertEqual(
+    self.assertAlmostEqual(
       self.interactions2.filtered_interaction(
         0,
         1,
         filter=set((('a_pos', 'b_nil'),
                     ('a_pos', 'b_neg')))
       ),
-      0.250
+      0.250,
+      places=3
+    )
+
+
+  def test_balance(self):
+    """Example from Structured Planning by Owens, pg. 141
+    """
+    self.assertAlmostEqual(
+      self.interactions2.balance(0, 1),
+      1.0 / 7,
+      places=3
     )
 
 
   def test_interaction(self):
     """Example from Structured Planning by Owens, pg. 141
     """
-    self.assertEqual(self.interactions2.interaction(0, 1), 0.418)
+    self.assertAlmostEqual(
+      self.interactions2.interaction(0, 1), 
+      0.418,
+      places=3
+    )
 
 
 if __name__=='__main__':
