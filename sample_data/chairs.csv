@@ -1,0 +1,15 @@
+,use,comfort,cost
+Gran Comfort Chair (Le Corbusier),home,1,1300
+Plywood Side Chair (Charles Eames),office/institutional,2,309
+Pavilion Chair (Ludwig Mies van der Rohe),lounge/reception area,3,1900
+Wassily Chair (Marcel Breuer),home,2,650
+ERO/S Chair (Philippe Starck),lounge/reception area,2,370
+Lounge Chair (Charles Eames),home,1,2150
+Naval Side Chair (Emeco),office/institutional,2,270
+Aeron Chair (Bill Stumpf and Don Chadwick),office/institutional,1,799
+Caper Chair (Bill Stumpf and Jeff Weber),office/institutional,1,199
+,,,
+field_type,discrete,continuous,continuous
+weight,100,1,50
+match_difference,0,0,100
+no_match_difference,1,2,300
