@@ -255,20 +255,20 @@ class Interactions:
   
 
   def interaction(self, a, b, variation='conflict + reinforcement'):
-    """Get the interaction between two elements. I don't grok how balancing
-    works when the variation isn't conflict + reinforcement, so I'll leave that
-    to implement later.
+    """Get the interaction between two elements. Skew filters based on
+       formulas on p. 143 of Structured Planning by Owens.
     """
-    if variation == 'conflict + reinforcement':
-      neutral = self.filtered_interaction(a, b, variation)
-      skews_a = self.filtered_interaction(a, b, variation, set((('a_neg', 'b_pos'),
-                                                                ('a_nil', 'b_pos'))))
-      skews_b = self.filtered_interaction(a, b, variation, set((('a_pos', 'b_nil'),
-                                                                ('a_pos', 'b_neg'))))
-      balance = self.balance(a, b)
-      return (((1 - balance) * neutral) + balance * skews_a + balance * skews_b) / (1 + balance)
-    else:
-      return self.filtered_interaction(a, b, variation)
+    skew_a_filter = set((('a_neg', 'b_pos'),
+                         ('a_nil', 'b_pos'),
+                         ('a_nil', 'b_neg')))
+    skew_b_filter = set((('a_neg', 'b_nil'),
+                         ('a_pos', 'b_nil'),
+                         ('a_pos', 'b_neg')))
+    neutral = self.filtered_interaction(a, b, variation)
+    skews_a = self.filtered_interaction(a, b, variation, skew_a_filter)
+    skews_b = self.filtered_interaction(a, b, variation, skew_b_filter)
+    b = self.balance(a, b)
+    return (((1 - b) * neutral) + b * skews_a + b * skews_b) / (1 + b)
 
 
 class Similarity:
