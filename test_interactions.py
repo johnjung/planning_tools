@@ -124,6 +124,24 @@ class TestInteractions(unittest.TestCase):
       0.25
     )
 
+    # assuming negative tests should return similar results as positive tests.
+    self.assertEqual(
+      self.interactions.var_int(0, 0, a_neg=True, b_neg=True),
+      0.0
+    )
+    self.assertEqual(
+      self.interactions.var_int(0, -2, a_nil=True, b_neg=True),
+      1.0
+    )
+    self.assertEqual(
+      self.interactions.var_int(-1, 0, a_neg=True, b_nil=True),
+      0.5
+    )
+    self.assertEqual(
+      self.interactions.var_int(-1, -1, neg_min=-4, pos_max=4, a_neg=True, b_neg=True),
+      0.25
+    )
+
 
   def test_filtered_interaction(self):
     """Example from Structured Planning by Owens, pg. 141

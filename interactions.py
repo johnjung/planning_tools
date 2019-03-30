@@ -178,21 +178,20 @@ class Interactions:
     # Several of the functions below have been altered from the ones described
     # in Structured Planning on p. 137. Those formulas seem to produce results
     # outside of 0.0 to 1.0. The formulas below works for the chart on p. 140.
-    if a_pos and b_nil:
-      # altered from S.P.
-      return 1.0 - ((r / 2 - a) / (r / 2))
+    # Several other formulas are best guesses- those are noted below.
+    if (a_neg and b_nil) or (a_pos and b_nil):
+      # altered from S.P. Negative case doesn't appear in S.P.
+      return 1.0 - ((r / 2 - abs(a)) / (r / 2))
     elif a_pos and b_neg:
       return abs(a - b) / r
-    elif a_pos and b_pos:
-      # altered from S.P.
-      return (a + b) / r
+    elif (a_pos and b_pos) or (a_neg and b_neg):
+      # altered from S.P. Negative case doesn't appear in S.P.
+      return abs(a + b) / r
     elif a_neg and b_pos:
       return abs(a - b) / r
-    elif a_nil and b_pos:
-      # altered from S.P.
-      return 1.0 - ((r / 2 - b) / (r / 2))
-    else:
-      raise ValueError
+    elif (a_nil and b_pos) or (a_nil and b_neg):
+      # altered from S.P. Negative case doesn't appear in S.P.
+      return 1.0 - ((r / 2 - abs(b)) / (r / 2))
 
 
   def balance(self, a, b):
