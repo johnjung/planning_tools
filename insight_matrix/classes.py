@@ -280,8 +280,7 @@ class Similarity:
   def load_yaml(self, f):
     """Load similarity data from a YAML file.
 
-       Parameters:
-         f -- a file-like object.
+    :param f: a file-like object.
     """
     data = yaml.safe_load(f)
     self.records = data['records']
@@ -291,11 +290,11 @@ class Similarity:
   def field_similarity(self, a, b, field):
     """Get an unweighted similarity score between two fields.
 
-       Parameters:
-         a -- a string, field label for the first record.
-         b -- a string, field label for the second record.
+    :param str a: a field label for the first record.
+    :param str b: a field label for the second record.
 
-       Returns: a float between 0.0 and 1.0, inclusive. 
+    :rtype float
+    :returns a number between 0.0 and 1.0, inclusive. 
     """
     if self.fields[field]['field_type'] == 'discrete':
       return float(self.records[a][field] == self.records[b][field])
@@ -311,14 +310,16 @@ class Similarity:
       return n / d
 
            
-  def record_similarity(self, a, b):
+  def record_similarity(self, a, b, mode='01'):
     """Get a weighted similarity score between two records.
 
-       Parameters:
-         a -- a string, field label for the first record.
-         b -- a string, field label for the second record.
+    :param str a: a field label for the first record.
+    :param str b: a field label for the second record.
+    :param str mode: alternate formulas for calculating similarity, see S.P.
+                     p. 157.
 
-       Returns: a float between 0.0 and 1.0, inclusive. 
+    :rtype float
+    :returns a float between 0.0 and 1.0, inclusive. 
     """
     scores = []
     for field in self.records[a].keys():
@@ -331,13 +332,22 @@ class Similarity:
 
     match = sum([score * weight for score, weight in scores])
     no_match = sum([(1.0 - score) * weight for score, weight in scores])
-    return match / (match + no_match)
+
+    if mode == '01':
+      return match / (match + no_match)
+    elif mode == '02':
+      return match / (match + 2 * no_match)
+    elif mode == '03':
+      return 2 * match / (2 * match + no_match)
+    else:
+      raise ValueError
 
 
   def csv(self):
     """Output a similarity matrix in CSV format.
 
-       Returns: a string with CSV data.
+    :rtype str
+    :returns a string with CSV data.
     """
     output = io.StringIO()
     writer = csv.writer(output)
@@ -369,8 +379,7 @@ class Matrix:
   def import_from_csv(self, csv_file):
     """Imports data and labels from a CSV file.
   
-       Arguments:
-       csv_file -- file-like object.
+    :param csv_file: a file-like object.
     """
     data = []
 
@@ -398,8 +407,9 @@ class Matrix:
     
 
   def max(self):
-    """Returns:
-       A float, the maximum value in the matrix. 
+    """
+    :rtype float
+    :returns the maximum value in the matrix. 
     """
     return max(self.data.reshape(-1,).tolist())
 
@@ -407,7 +417,7 @@ class Matrix:
   def is_symmetric(self):
     """Check to be sure a matrix is symmetric. 
   
-       Returns: boolean.
+    :rtype bool 
     """
     if self.width() != self.height():
       return False
@@ -425,12 +435,11 @@ class Matrix:
     """Get all the index pairs necessary for a symmetric matrix,
        for either the upper or lower triangle of the matrix. 
 
-       Arguments:
-       upper -- a boolean, if True return indices for an upper triangle, if
-                False return indices for a lower triangle.
+    :param bool upper: if True return indices for an upper triangle, if
+                       False return indices for a lower triangle.
 
-       Returns:
-       A list of index pairs. 
+    :rtype list
+    :returns a list of index pairs. 
     """
     assert self.width() == self.height()
 
@@ -448,12 +457,8 @@ class Matrix:
     """Fill in a symmetric matrix by copying the upper triangle to the lower
        triangle, or vice versa.
 
-       Arguments:
-       upper -- a boolean. Fill the upper triangle if true, fill the lower
-                triangle if false.
-  
-       Side effect:
-       Fills in the matrix. 
+    :param bool upper: Fill the upper triangle if true, fill the lower
+                       triangle if false.
     """
     assert self.width() == self.height()
 
@@ -464,13 +469,9 @@ class Matrix:
   def reorder(self, y_order, x_order=None):
     """Reorder the matrix.
   
-       Arguments:
-       y_order -- a list of indices: the new y matrix order.
-       x_order -- a list of indices: the new x matrix order, or None for
-                  symmetric matrices. 
-  
-       Side effect:
-       Reorder data.
+    :param list y_order: indices for the new y matrix order.
+    :param list x_order: indices for the new x matrix order, or None for
+                         symmetric matrices. 
     """
     if self.is_symmetric():
       x_order = y_order
@@ -491,10 +492,9 @@ class Matrix:
   def cluster(self, linkage_method='complete'):
     """Cluster similarity/distance data to get a new index order.
   
-       Arguments:
-       linkage_method -- e.g., 'single', 'complete', 'average', 'weighted',
-                         'median', 'ward', see
-                         https://docs.scipy.org/doc/scipy/reference/generated/scipy.cluster.hierarchy.linkage.html.
+    :param str linkage_method: e.g., 'single', 'complete', 'average',
+                               'weighted', 'median', 'ward', see
+                               https://docs.scipy.org/doc/scipy/reference/generated/scipy.cluster.hierarchy.linkage.html.
     """
     index_order = dendrogram(
       linkage(self.data, linkage_method),
@@ -508,9 +508,6 @@ class Matrix:
 
   def randomize(self):
     """Randomize the matrix, e.g. for testing. 
-  
-       Side effect:
-       Puts matrix elements in a random order.
     """
     y_indices = list(range(self.height()))
     random.shuffle(y_indices)
@@ -525,8 +522,8 @@ class Matrix:
   def csv(self):
     """Exports data and labels to a CSV string.
 
-       Returns:
-       a string, CSV data.
+    :rtype str
+    :returns CSV data.
     """
     output = io.StringIO()
     writer = csv.writer(output)
@@ -542,8 +539,9 @@ class Matrix:
 
 
   def ascii(self):
-    """Returns:
-       A string, an ASCII-art representation of the matrix and labels.
+    """
+    :rtype str
+    :returns an ASCII-art representation of the matrix and labels.
     """
     to_ascii = numpy.vectorize(lambda c: ' .,:-=+*#%@'[int(c * 10)])
 
