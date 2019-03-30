@@ -1,0 +1,246 @@
+A,01,sherry
+A,02,tobacco
+A,02,leather
+A,03,smoked bacon
+A,04,cocoa
+A,04,caramel
+A,05,coffee
+A,06,yeast 
+A,07,cardboard
+A,07,damp soil
+A,08,celery
+A,09,confiture
+A,10,resin
+A,10,pineapple
+A,11,malt
+A,11,cereal
+A,11,toast
+A,11,bread
+A,12,stable
+A,12,straw
+A,12,freshly-cut grass
+A,13,mango
+A,13,melon
+A,14,mint
+A,15,cabbage
+A,16,broth
+A,17,hazelnut
+A,17,marzipan
+A,17,gingerbread
+A,17,vanilla
+A,17,nutmeg
+A,17,honey
+A,18,laurel 
+A,18,rose
+A,18,jasmine
+A,18,geranium
+A,18,acadia blossom
+A,19,banana
+A,20,prune
+A,21,thyme
+A,22,pear
+A,22,peardrop
+A,23,butter
+A,23,cheese
+A,24,green walnut shell
+A,25,lavendar
+A,26,orange
+A,26,lemon
+A,26,grapefruit
+A,27,apple
+A,28,sewer 
+A,29,onion
+A,30,shrimp
+A,31,tomato
+A,32,yarrow
+A,33,black pepper
+A,34,cassis
+A,34,anise
+A,34,licorice 
+A,35,strawberry
+A,35,raspberry
+A,36,clove
+A,36,wood
+A,37,metal
+A,38,rotten egg
+A,38,lit match
+A,39,iodine
+A,39,tar
+A,39,pharmacological
+A,39,plastic
+A,40,mildew
+A,41,vinegar
+A,42,skunk
+A,42,billy goat
+A,42,cat
+A,42,horse sweat
+A,43,lactic acid
+A,44,ink
+A,44,paint
+A,44,glue
+A,45,burnt rubber
+A,45,kerosene
+B,01,confiture
+B,02,yarrow
+B,03,celery
+B,04,peardrop
+B,05,wood
+B,06,butter
+B,06,cheese
+B,07,green walnut shell
+B,08,pharmacological
+B,09,lactic acid
+B,10,tomato
+B,11,burnt rubber
+B,12,smoked bacon
+B,13,tar
+B,13,plastic
+B,14,resin
+B,15,melon
+B,15,apple
+B,15,mango
+B,15,banana
+B,16,strawberry
+B,16,grapefruit
+B,16,lemon
+B,16,orange
+B,16,pear
+B,16,prune
+B,16,raspberry
+B,17,cocoa
+B,17,honey
+B,18,pineapple
+B,19,black pepper
+B,20,shrimp
+B,21,metal
+B,22,sewer 
+B,22,rotten egg
+B,22,lit match
+B,23,nutmeg
+B,23,caramel
+B,23,cereal
+B,23,toast
+B,23,broth
+B,23,marzipan
+B,23,vanilla
+B,23,bread
+B,23,malt
+B,23,cardboard
+B,23,yeast 
+B,23,gingerbread
+B,23,hazelnut
+B,24,cassis
+B,24,geranium
+B,24,laurel 
+B,24,rose
+B,24,clove
+B,24,lavendar
+B,24,jasmine
+B,24,acadia blossom
+B,24,freshly-cut grass
+B,24,stable
+B,24,horse sweat
+B,24,thyme
+B,25,straw
+B,26,licorice 
+B,26,anise
+B,26,mint
+B,27,cabbage
+B,27,onion
+B,28,ink
+B,28,paint
+B,28,glue
+B,28,sherry
+B,28,vinegar
+B,28,kerosene
+B,28,iodine
+B,29,damp soil
+B,29,coffee
+B,29,tobacco
+B,29,mildew
+B,29,leather
+B,29,skunk
+B,29,cat
+B,29,billy goat
+C,01,onion
+C,02,confiture
+C,03,yarrow
+C,04,lactic acid
+C,05,shrimp
+C,06,honey
+C,07,peardrop
+C,08,cassis
+C,09,black pepper
+C,09,clove
+C,09,licorice 
+C,10,cabbage
+C,10,wood
+C,10,celery
+C,11,butter
+C,11,cheese
+C,12,grapefruit
+C,12,mango
+C,12,pear
+C,12,raspberry
+C,12,apple
+C,12,orange
+C,12,lemon
+C,12,pineapple
+C,12,prune
+C,12,strawberry
+C,12,tomato
+C,12,melon
+C,13,kerosene
+C,13,iodine
+C,13,burnt rubber
+C,13,paint
+C,13,vinegar
+C,13,sherry
+C,13,metal
+C,13,plastic
+C,13,pharmacological
+C,13,tar
+C,13,glue
+C,13,ink
+C,14,thyme
+C,14,rose
+C,14,acadia blossom
+C,14,jasmine
+C,14,lavendar
+C,14,geranium
+C,14,laurel 
+C,14,anise
+C,14,mint
+C,14,freshly-cut grass
+C,14,green walnut shell
+C,15,skunk
+C,15,lit match
+C,15,rotten egg
+C,15,resin
+C,15,sewer 
+C,15,billy goat
+C,15,horse sweat
+C,15,damp soil
+C,15,leather
+C,15,mildew
+C,15,stable
+C,15,cat
+C,15,straw
+C,16,broth
+C,16,smoked bacon
+C,16,tobacco
+C,16,marzipan
+C,16,coffee
+C,16,cocoa
+C,16,banana
+C,16,nutmeg
+C,16,caramel
+C,16,cereal
+C,16,cardboard
+C,16,hazelnut
+C,16,gingerbread
+C,16,yeast 
+C,16,malt
+C,16,toast
+C,16,vanilla
+C,16,bread
