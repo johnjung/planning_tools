@@ -138,11 +138,11 @@ class Interactions:
       else:
         if data_mode:
           self.element_labels.append(row[0])
-          self.data.append(row[1:])
+          self.data.append([int(i) for i in row[1:]])
         else:
-          self.weights = row[1:] 
-          self.neg_min = next(reader, None)[1:]
-          self.pos_max = next(reader, None)[1:]
+          self.weights = [int(i) for i in row[1:]]
+          self.neg_min = [int(i) for i in next(reader, None)[1:]]
+          self.pos_max = [int(i) for i in next(reader, None)[1:]]
           break
 
 
@@ -167,9 +167,9 @@ class Interactions:
     """
     assert sum((a_neg, a_nil, a_pos)) == 1
     assert sum((b_neg, b_nil, b_pos)) == 1
-  
-    if (a_neg and a >= 0) or (a_nil and a != 0) or (a_pos and a <= 0) or \
-       (b_neg and b >= 0) or (b_nil and b != 0) or (b_pos and b <= 0):
+
+    if (a_neg and a >= 0.0) or (a_nil and a != 0) or (a_pos and a <= 0) or \
+       (b_neg and b >= 0.0) or (b_nil and b != 0) or (b_pos and b <= 0):
       return 0.0
   
     if a_nil and b_nil:
@@ -215,22 +215,20 @@ class Interactions:
       kwargs_base = {
         'a': self.data[a][i],
         'b': self.data[b][i],
-        'min': self.neg_min[i],
-        'max': self.pos_max[i]
+        'neg_min': self.neg_min[i],
+        'pos_max': self.pos_max[i]
       }
       for a_arg, b_arg in self.mappings[variation]['n'].difference(filter):
         kwargs = {a_arg: True, b_arg: True}
         n.append(1.0 * self.weights[i] * self.var_int(
-          self.data[a][i],
-          self.data[b][i],
           **kwargs_base, **kwargs)
         )
-      for a_arg, b_arg in mappings[variation]['d'].difference(filter):
+      for a_arg, b_arg in self.mappings[variation]['d'].difference(filter):
         kwargs = {a_arg: True, b_arg: True}
         d.append(1.0 * self.weights[i] * self.var_int(
-          self.data[a][i],
-          self.data[b][i],
           **kwargs_base, **kwargs))
+
+    return 1.0 * sum(n) / sum(n) + sum(d)
   
 
   def interaction(self, a, b, variation='conflict + reinforcement'):
@@ -244,7 +242,7 @@ class Interactions:
                                                                 ('a_nil', 'b_pos'))))
       skews_b = self.filtered_interaction(a, b, variation, set((('a_pos', 'b_nil'),
                                                                 ('a_pos', 'b_neg'))))
-      balance = self.get_balance(a, b)
+      balance = self.balance(a, b)
       return (1 - balance) * neutral + balance * skews_a + balance * skews_b / (1 + balance)
     else:
       return self.filtered_interaction(a, b, variation)

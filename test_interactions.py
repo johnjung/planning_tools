@@ -78,15 +78,15 @@ class TestInteractions(unittest.TestCase):
     )
     self.assertEqual(
       self.interactions.weights,
-      ['1', '2', '1', '3', '3', '2', '1']
+      [1, 2, 1, 3, 3, 2, 1]
     )
     self.assertEqual(
       self.interactions.neg_min,
-      ['-2', '-2', '-2', '-2', '-2', '-2', '-4']
+      [-2, -2, -2, -2, -2, -2, -4]
     )
     self.assertEqual(
       self.interactions.pos_max,
-      ['2', '2', '2', '2', '2', '2', '4']  
+      [2, 2, 2, 2, 2, 2, 4]  
     )
 
 
