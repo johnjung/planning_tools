@@ -1,6 +1,57 @@
 import io
 import unittest
-from insight_matrix import Interactions, Matrix
+from insight_matrix import CardSort, Interactions, Matrix
+
+
+class TestCardSort(unittest.TestCase):
+  def __init__(self, *args, **kwargs):
+    super().__init__(*args, **kwargs)
+
+    self.cardsort = CardSort()
+    self.cardsort.import_from_csv(
+      io.StringIO(('A,01,sherry\n'
+                   'A,01,tobacco\n'
+                   'A,02,leather\n'
+                   'B,01,sherry\n'
+                   'B,02,tobacco\n'
+                   'B,02,leather\n'
+                   'C,01,sherry\n'))
+    )
+
+
+  def test_get_groups(self):
+    self.assertEqual(
+      self.cardsort.get_groups(),
+      [
+        set(['sherry', 'tobacco']),
+        set(['leather']),
+        set(['sherry']),
+        set(['tobacco', 'leather']),
+        set(['sherry'])
+      ]
+    )
+ 
+ 
+  def test_get_elements(self):
+    self.assertEqual(
+      self.cardsort.get_elements(),
+      ['leather', 'sherry', 'tobacco']
+    )
+
+
+  def test_get_jaccard(self):
+    self.assertEqual(
+      self.cardsort.get_jaccard('sherry', 'tobacco'),
+      0.25
+    )
+    self.assertEqual(
+      self.cardsort.get_jaccard('leather', 'tobacco'),
+      1.0 / 3
+    )
+    self.assertEqual(
+      self.cardsort.get_jaccard('leather', 'sherry'),
+      0.0
+    )
 
 
 class TestInteractions(unittest.TestCase):
