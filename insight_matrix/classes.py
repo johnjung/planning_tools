@@ -3,6 +3,7 @@ import graphviz
 import io
 import numpy
 import random
+import xml.etree.ElementTree as ElementTree
 import yaml
 
 from docopt import docopt
@@ -725,3 +726,28 @@ class Matrix:
       ))
       total_count = total_count + count[i]
       i = i + 1
+
+
+  def svg(self):
+    def draw_cell(x, y):
+      cell_size = (self.chart_width - self.cell_spacing * (len(self.data) - 1)) / len(self.data)
+      x_offset = cell_size * x + (self.cell_spacing * (x - 1))
+      y_offset = cell_size * y + (self.cell_spacing * (y - 1))
+      ElementTree.SubElement(
+        svg,
+        'rect',
+        x=x_offset,
+        y=y_offset,
+        width=str(cell_size),
+        height=str(cell_size),
+        style="fill: black"
+      )
+    svg = ElementTree.Element(
+      'svg',
+      width=str(self.chart_width),
+      height=str(self.chart_height),
+      version='1.1'
+    )
+    for y in range(len(self.data)):
+      for x in range(len(self.data[0])):
+        draw_cell(x, y)
