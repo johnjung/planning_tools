@@ -10,12 +10,24 @@ from scipy.cluster.hierarchy import dendrogram, linkage
 
 
 class CardSort:
+  """
+  A class to import card sort data into a similarity matrix. Similarity data is
+  calculated with a Jaccard index: see
+  https://en.wikipedia.org/wiki/Jaccard_index.
+
+  The tests property is a dictionary for card sort data: e.g.
+  {
+    'test a': {
+      'group a': set(('item 1', 'item 2')),
+      'group b': set(('item 3',))
+    },
+    'test b': {
+      'group a': set(('item 1',)),
+      'group b': set(('item 2', 'item 3'))
+    }
+  }
+  """
   def __init__(self):
-    """
-    Tests is a dictionary, where keys are the names of each test and values are
-    the groupings from each test. Groups are also represented as dictionaries-
-    here the key is the name of each group and the value is a set of elements.
-    """
     self.tests = {}
 
   def import_from_csv(self, csv_file):
@@ -35,19 +47,36 @@ class CardSort:
 
 
   def get_groups(self):
-    """Get a flat list of sets, all groups from all tests.
+    """Get a flat list of sets, all groups from all tests. e.g.:
+    [
+      set(('item 1',)),
+      set(('item 2', 'item 3')),
+      ...
+    ]
+    :rtype list
+    :returns a list of sets.
     """
     return [g for t in self.tests.values() for g in t.values()]
 
 
   def get_elements(self):
-    """Get a sorted list of unique elements that appeared in any tests.
+    """Get a sorted list of unique elements that appeared in any tests, e.g.:
+    ['apples', 'bananas', 'oranges']
+
+    :rtype list
+    :returns a unique list of elements from the card sort.
     """
     return sorted(set([e for g in self.get_groups() for e in g]))
   
 
   def get_jaccard(self, a, b):
-    """Intersection over union.
+    """Get the Jaccard index of two elements.
+
+    :param str a: an element from the card sort.
+    :param str b: an element from the card sort.
+
+    :rtype float
+    :returns a number between 0.0 and 1.0, inclusive.
     """
     elements = set([a, b])
     counts = []
@@ -59,14 +88,22 @@ class CardSort:
 
 
   def get_lower_triangle_indices(self):
-    """e.g., [(1, 0), (2, 0), (2, 1)]
+    """Get indices for the lower triangle of a matrix, e.g.:
+    [(1, 0), (2, 0), (2, 1)]
+
+    :rtype list
+    :returns a list of tuples.
     """
     elements = self.get_elements()
     return [(y, x) for y in range(len(elements)) for x in range(y)]
 
 
   def get_similarity_data(self):
-    """Return a two-dimensional list of similarity data.
+    """Get a two-dimensional list of similarity data.
+
+    :rtype list
+    :returns a list of lists, where each row contains similarity data (floats)
+    from 0.0 to 1.0
     """
     elements = self.get_elements()
     data = [[[] for i in range(len(elements))] for j in range(len(elements))]
@@ -83,6 +120,8 @@ class CardSort:
 
 
   def to_csv(self, f):
+    """Write a CSV file to a file.
+    """
     labels = sorted(list(self.get_elements()))
     data = self.get_similarity_data()
 
