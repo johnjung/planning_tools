@@ -4,6 +4,7 @@
     insight_matrix cluster [--linkage_method=<linkage_method>] -
     insight_matrix fill [(--upper|--lower)] -
     insight_matrix graph_cluster [--engine=<engine>] -
+    insight_matrix histogram -
     insight_matrix randomize -
     insight_matrix show -
     insight_matrix (--help)
@@ -28,6 +29,7 @@
 import sys
 
 from docopt import docopt
+from classes import Matrix
 
 
 def main():
@@ -59,6 +61,12 @@ def main():
     if '-' in options:
       m.import_from_csv(sys.stdin)
     m.graph(0.5, options['--engine'])
+  elif options['histogram']:
+    m = Matrix()
+    if '-' in options:
+      m.import_from_csv(sys.stdin)
+      m.histogram()
+      sys.exit()
   elif options['randomize']:
     m = Matrix()
     if '-' in options:
