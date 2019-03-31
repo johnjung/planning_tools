@@ -1,7 +1,6 @@
 import csv
 import graphviz
 import io
-import math
 import numpy
 import random
 import yaml
@@ -326,9 +325,9 @@ class Interactions:
         n.append(1.0 * self.weights[i] * self.var_int(
           **kwargs_base, **kwargs)
         )
-        d.append(1.0 * self.weights[i] * math.ceil(self.var_int(
+        d.append(1.0 * self.weights[i] * float(bool(self.var_int(
           **kwargs_base, **kwargs)
-        ))
+        )))
       for a_arg, b_arg in self.mappings[variation]['d'].difference(filter):
         kwargs = {a_arg: True, b_arg: True}
         d.append(1.0 * self.weights[i] * self.var_int(
