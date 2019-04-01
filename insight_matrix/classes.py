@@ -707,6 +707,18 @@ class Matrix:
   def histogram(self):
     coefficients = []
     # do I need to be able to push the triangle down one?
+    # left align
+    # '{:<16}'   
+    # '{:10}'
+    # combine truncation and padding:
+    # '{:10.10}'
+    # right aligned, space before number.
+    # '{:4d'
+    # space in front of positive number
+    # '{: f}'
+    # 6 chars wide, 2 after decimal point. 
+    # if no. is short it gets right padded.
+    # '{:6.2f}'
     for y, x in self.get_symmetric_index_pairs(upper=False):
       coefficients.append(self.data[y, x])
 
