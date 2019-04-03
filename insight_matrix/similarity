@@ -1,0 +1,22 @@
+#!/usr/bin/env python
+"""Usage:
+    similarity [--to-matrix] -
+"""
+
+import sys
+
+from docopt import docopt
+from classes import Similarity
+
+
+def main():
+  options = docopt(__doc__)
+
+  s = Similarity()
+  if '-' in options:
+    s.import_from_csv(sys.stdin)
+  sys.stdout.write(s.csv())
+
+
+if __name__ == '__main__':
+  main()

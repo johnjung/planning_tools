@@ -1,0 +1,22 @@
+#!/usr/bin/env python
+"""Usage:
+    cardsort [--to-matrix] -
+"""
+
+import sys
+
+from docopt import docopt
+from classes import CardSort
+
+
+def main():
+  options = docopt(__doc__)
+
+  c = CardSort()
+  if '-' in options:
+    c.import_from_csv(sys.stdin)
+  sys.stdout.write(c.csv())
+
+
+if __name__ == '__main__':
+  main()

@@ -3,8 +3,8 @@ import graphviz
 import io
 import numpy
 import random
+import re
 import xml.etree.ElementTree as ElementTree
-import yaml
 
 from docopt import docopt
 from scipy.cluster.hierarchy import dendrogram, linkage  
@@ -107,7 +107,7 @@ class CardSort:
     from 0.0 to 1.0
     """
     elements = self.get_elements()
-    data = [[[] for i in range(len(elements))] for j in range(len(elements))]
+    data = [['' for i in range(len(elements))] for j in range(len(elements))]
 
     for i in range(len(elements)):
       data[i][i] = 1.0
@@ -115,21 +115,24 @@ class CardSort:
     for y, x in self.get_lower_triangle_indices():
       j = self.get_jaccard(elements[x], elements[y])
       data[y][x] = j
-      data[x][y] = j
 
     return data
 
 
-  def to_csv(self, f):
+  def csv(self):
     """Write a CSV file to a file.
     """
+    output = io.StringIO()
+    writer = csv.writer(output)
     labels = sorted(list(self.get_elements()))
     data = self.get_similarity_data()
 
-    writer = csv.writer(f)
+    writer = csv.writer(output)
     writer.writerow([] + labels)
     for y in range(len(data)):
       writer.writerow([labels[y]] + data[y])
+
+    return output.getvalue()
 
 
 class Interactions:
@@ -399,14 +402,38 @@ class Similarity:
     self.fields = None
 
 
-  def load_yaml(self, f):
+  def import_from_csv(self, csv_file):
     """Load similarity data from a YAML file.
 
-    :param f: a file-like object.
+    :param csv_file: a file-like object.
     """
-    data = yaml.safe_load(f)
-    self.records = data['records']
-    self.fields = data['fields']
+    reader = csv.reader(csv_file)
+    fields = next(reader, None)[1:]
+    self.fields = {f: {} for f in fields}
+    self.records = {}
+
+    data_mode = True
+    for row in reader:
+      if not any(row):
+        if data_mode:
+          data_mode = False
+          continue
+      else:
+        if data_mode:
+          self.records[row[0]] = {}
+          for f in range(len(fields)):
+            if re.match('^[0-9]+$', row[f + 1]):
+              self.records[row[0]][fields[f]] = int(row[f + 1])
+            elif re.match('^[0-9.]+$', row[f + 1]):
+              self.records[row[0]][fields[f]] = float(row[f + 1])
+            else:
+              self.records[row[0]][fields[f]] = row[f + 1]
+        else:
+          for f in range(len(fields)):
+            if re.match('^[0-9]+$', row[f + 1]):
+              self.fields[fields[f]][row[0]] = int(row[f + 1])
+            elif re.match('^[0-9.]+$', row[f + 1]):
+              self.fields[fields[f]][row[0]] = float(row[f + 1])
 
 
   def field_similarity(self, a, b, field):

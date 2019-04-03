@@ -5,7 +5,7 @@ A,03,smoked bacon
 A,04,cocoa
 A,04,caramel
 A,05,coffee
-A,06,yeast 
+A,06,yeast
 A,07,cardboard
 A,07,damp soil
 A,08,celery
@@ -30,7 +30,7 @@ A,17,gingerbread
 A,17,vanilla
 A,17,nutmeg
 A,17,honey
-A,18,laurel 
+A,18,laurel
 A,18,rose
 A,18,jasmine
 A,18,geranium
@@ -48,7 +48,7 @@ A,26,orange
 A,26,lemon
 A,26,grapefruit
 A,27,apple
-A,28,sewer 
+A,28,sewer
 A,29,onion
 A,30,shrimp
 A,31,tomato
@@ -56,7 +56,7 @@ A,32,yarrow
 A,33,black pepper
 A,34,cassis
 A,34,anise
-A,34,licorice 
+A,34,licorice
 A,35,strawberry
 A,35,raspberry
 A,36,clove
@@ -113,7 +113,7 @@ B,18,pineapple
 B,19,black pepper
 B,20,shrimp
 B,21,metal
-B,22,sewer 
+B,22,sewer
 B,22,rotten egg
 B,22,lit match
 B,23,nutmeg
@@ -126,12 +126,12 @@ B,23,vanilla
 B,23,bread
 B,23,malt
 B,23,cardboard
-B,23,yeast 
+B,23,yeast
 B,23,gingerbread
 B,23,hazelnut
 B,24,cassis
 B,24,geranium
-B,24,laurel 
+B,24,laurel
 B,24,rose
 B,24,clove
 B,24,lavendar
@@ -142,7 +142,7 @@ B,24,stable
 B,24,horse sweat
 B,24,thyme
 B,25,straw
-B,26,licorice 
+B,26,licorice
 B,26,anise
 B,26,mint
 B,27,cabbage
@@ -172,7 +172,7 @@ C,07,peardrop
 C,08,cassis
 C,09,black pepper
 C,09,clove
-C,09,licorice 
+C,09,licorice
 C,10,cabbage
 C,10,wood
 C,10,celery
@@ -208,7 +208,7 @@ C,14,acadia blossom
 C,14,jasmine
 C,14,lavendar
 C,14,geranium
-C,14,laurel 
+C,14,laurel
 C,14,anise
 C,14,mint
 C,14,freshly-cut grass
@@ -217,7 +217,7 @@ C,15,skunk
 C,15,lit match
 C,15,rotten egg
 C,15,resin
-C,15,sewer 
+C,15,sewer
 C,15,billy goat
 C,15,horse sweat
 C,15,damp soil
@@ -239,7 +239,7 @@ C,16,cereal
 C,16,cardboard
 C,16,hazelnut
 C,16,gingerbread
-C,16,yeast 
+C,16,yeast
 C,16,malt
 C,16,toast
 C,16,vanilla
