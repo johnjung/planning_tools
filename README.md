@@ -1,4 +1,8 @@
-# insight_matrix
+# design_methods
+
+This repository will contain scripts to help with different design methods used in the planning process.
+
+## Insight Matrix
 
 An insight matrix is a tool to discover relationships between items. If you
 take a set of items, and compare every item against every item, you get a
@@ -15,17 +19,17 @@ For small sets of items you can do pairwise comparisons manually. I like to do
 card sorts to collect similarity data when sets have up to about a hundred
 items.  Programmatic techniques should be appropriate for even larger groups. 
 
-## Quickstart
+### Quickstart
 
 ```
-$ python3 -m venv insight_matrix_env
-$ source insight_matrix_env/bin/activate
-$ git clone https://github.com/johnjung/insight_matrix.git
-$ cd insight_matrix
+$ python3 -m venv design_methods_env
+$ source design_methods_env/bin/activate
+$ git clone https://github.com/johnjung/design_methods.git
+$ cd design_methods
 $ python insight_matrix.py --help
 ```
 
-### View some sample data in the terminal.
+#### View some sample data in the terminal.
 ```
 $ cat sample_data/fruits_and_vegetables.csv | ./insight_matrix.py show -
 
@@ -75,7 +79,7 @@ $ cat sample_data/fruits_and_vegetables.csv | ./insight_matrix.py show -
 
 ```
 
-### Fill the upper triangle with data from the lower triangle.
+#### Fill the upper triangle with data from the lower triangle.
 ```
 $ cat sample_data/fruits_and_vegetables.csv | ./insight_matrix.py fill --upper - | ./insight_matrix.py show -
 
@@ -125,7 +129,7 @@ $ cat sample_data/fruits_and_vegetables.csv | ./insight_matrix.py fill --upper -
 
 ```
 
-### Cluster data.
+#### Cluster data.
 ```
 $ cat sample_data/fruits_and_vegetables.csv | ./insight_matrix.py fill --upper - | ./insight_matrix.py cluster --linkage_method=average - | ./insight_matrix.py show -
 
@@ -174,7 +178,7 @@ $ cat sample_data/fruits_and_vegetables.csv | ./insight_matrix.py fill --upper -
            s p i n a c h                                 , , ,   , , ,   ,   , , , = @
 ```
 
-### Get clustered data as CSV. 
+#### Get clustered data as CSV. 
 ```
 $ cat sample_data/fruits_and_vegetables.csv | ./insight_matrix.py fill --upper - | ./insight_matrix.py cluster --linkage_method=average - > clustered_data.csv
 ```
@@ -191,9 +195,3 @@ requests.
 ## Author
 
 John Jung
-
-## Acknowledgements
-
-Vijay Kumar, professor at the Institute of Design, first introduced me to this
-technique. You can read about it and other methods in his book, [101 Design
-Methods](http://www.101designmethods.com).
