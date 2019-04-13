@@ -7,18 +7,20 @@ def readme():
 
 
 setup(
-    name="insight_matrix",
-    description="Clustering tools for designers.",
+    name="planning_tools",
+    description="Tools for design methods and design planning.",
     version="0.1.0",
     long_description=readme(),
     author="John Jung",
     author_email="john@johnjung.us",
     packages=find_packages(),
     include_package_data=True,
-    url='https://github.com/johnjung/insight_matrix',
+    url='https://github.com/johnjung/planning_tools",
     entry_points={
       'console_scripts': [
-        'insight_matrix = insight_matrix.__main__:main'
+        'cardsort = planning_tools.cardsort.main',
+        'matrix = planning_tools.matrix.main',
+        'similarity = planning_tools.similarity.main'
       ]
     }
 )

@@ -1,8 +1,10 @@
-# design_methods
+# Planning Tools
 
-This repository will contain scripts to help with different design methods used in the planning process.
+v.0.0.1
 
-## Insight Matrix
+This repository contains scripts to help with different design methods used in the planning process.
+
+### Insight Matrix
 
 An insight matrix is a tool to discover relationships between items. If you
 take a set of items, and compare every item against every item, you get a
@@ -182,10 +184,6 @@ $ cat sample_data/fruits_and_vegetables.csv | ./insight_matrix.py fill --upper -
 ```
 $ cat sample_data/fruits_and_vegetables.csv | ./insight_matrix.py fill --upper - | ./insight_matrix.py cluster --linkage_method=average - > clustered_data.csv
 ```
-
-## To do
-
-Look at ways to use graphs for clustering. [These slides describe some algorithms](https://www.csc2.ncsu.edu/faculty/nfsamato/practical-graph-mining-with-R/slides/pdf/Graph_Cluster_Analysis.pdf).
 
 ## Contributing
 
