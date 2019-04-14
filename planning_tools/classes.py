@@ -423,6 +423,8 @@ class Similarity:
                             self.fields[fields[f]][row[0]] = int(row[f + 1])
                         elif re.match('^[0-9.]+$', row[f + 1]):
                             self.fields[fields[f]][row[0]] = float(row[f + 1])
+                        else:
+                            self.fields[fields[f]][row[0]] = row[f + 1]
 
     def field_similarity(self, a, b, field):
         """Get an unweighted similarity score between two fields.

@@ -1,20 +1,24 @@
 #!/usr/bin/env python
 """Usage:
-    similarity [--to-matrix] -
+    similarity to-matrix <file>
 """
 
 import sys
 
 from docopt import docopt
-from classes import Similarity
+from planning_tools import Similarity
 
 
 def main():
-    options = docopt(__doc__)
+    arguments = docopt(__doc__)
 
     s = Similarity()
-    if '-' in options:
-        s.import_from_csv(sys.stdin)
+    if arguments['to-matrix']:
+        if arguments['<file>'] == '-':
+            f = sys.stdin
+        else:
+            f = open(arguments['<file>'], 'r')
+        s.import_from_csv(f)
     sys.stdout.write(s.csv())
 
 

@@ -2,88 +2,101 @@
 
 v.0.0.1
 
-This repository contains scripts to help with different design methods used in the planning process.
+This repository contains scripts to help with different design methods used in
+the planning process.
 
-### Insight Matrix
+## Quickstart
 
-An insight matrix is a tool to discover relationships between items. If you
-take a set of items, and compare every item against every item, you get a
-similarity matrix. Then you can use hierarchical clustering on that similarity
-matrix to automatically extract groups. [I put together these notes for an
-overview of this kind of
-clustering](http://johnjung.us/hierarchical-clustering.pdf).
+These programs were written in Python 3. If you would like to run these programs
+on a Mac, you may need to install that version of Python first.
 
-This program takes an Excel spreadsheet with similarity information as input.
-Then it returns as output a copy of that spreadsheet with a new, sorted
-worksheet attached.
+To start, install Homebrew:
 
-For small sets of items you can do pairwise comparisons manually. I like to do
-card sorts to collect similarity data when sets have up to about a hundred
-items.  Programmatic techniques should be appropriate for even larger groups. 
-
-### Quickstart
-
-```
-$ python3 -m venv design_methods_env
-$ source design_methods_env/bin/activate
-$ git clone https://github.com/johnjung/design_methods.git
-$ cd design_methods
-$ python insight_matrix.py --help
+```console
+$ ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
 ```
 
-#### View some sample data in the terminal.
-```
-$ cat sample_data/fruits_and_vegetables.csv | ./insight_matrix.py show -
+Then install Python 3:
 
-                                                   s                                  
-                                         r         t                                  
-                                       g a         r                     p            
-                             c         r s         a                     i            
-                             u     a   a p c       w       p b   t       n            
-                             c     v   p b h p     b c     o r o o       e l p b s   c
-                           s u     o l e e e e c a e a     t o r m   g   a e e a p o a
-                           q m   b c e f r r a e p r b   l a c a a p r   p t p n i n r
-                           u b f e a m r r r c l p r b p i t c n t e a c p t p a n i r
-                           a e i a d o u i i h e l i a e m o o g o a p o l u e n a o o
-                           s r g n o n i e e e r e e g a e e l e e r e r e c r a c n t
-                           h s s s s s t s s s y s s e s s s i s s s s n s e s s h s s
-                                                                                      
-             s q u a s h   @                                                          
-       c u c u m b e r s     @                                                        
-                 f i g s       @                                                      
-               b e a n s     ,   @                                                    
-         a v o c a d o s           @                                                  
-             l e m o n s             @                                                
-     g r a p e f r u i t       ,     , @                                              
-   r a s p b e r r i e s       ,       , @                                            
-         c h e r r i e s       =       , , @                                          
-           p e a c h e s                 , , @                                        
-             c e l e r y     *   ,             @                                      
-             a p p l e s       ,       , , = =   @                                    
- s t r a w b e r r i e s       ,       , * , ,   , @                                  
-           c a b b a g e                             @                                
-                 p e a s     ,   =             ,       @                              
-               l i m e s             * ,                 @                            
-         p o t a t o e s   ,                         ,     @                          
-         b r o c c o l i     ,   =             ,       *     @                        
-           o r a n g e s             , *                 ,     @                      
-         t o m a t o e s     *   ,             =       ,     ,   @                    
-               p e a r s       ,       , , , *   = ,               @                  
-             g r a p e s       ,       , = , ,   , =               = @                
-                 c o r n   =                           ,     ,   ,     @              
-     p i n e a p p l e s       ,   , , = , , ,   , ,     ,     ,   , ,   @            
-           l e t t u c e     ,                 ,     , ,     ,   ,         @          
-           p e p p e r s     *   ,             *       =     =   *     ,   , @        
-           b a n a n a s       ,   ,   , , , ,   = ,           ,   = ,   =     @      
-           s p i n a c h   ,                   ,     , ,     ,   ,     ,   = ,   @    
-             o n i o n s     ,                 ,       ,   , ,   ,     ,   , ,   , @  
-           c a r r o t s     ,   =             ,       =     *   ,     ,     =   , , @
-
+```console
+$ brew install python
 ```
 
-#### Fill the upper triangle with data from the lower triangle.
+Once you have a working version of Python 3 on your system you can install
+Planning Tools. The following commands set up a Python virtual environment and
+then install the software into that environment:
+
 ```
-$ cat sample_data/fruits_and_vegetables.csv | ./insight_matrix.py fill --upper - | ./insight_matrix.py show -
+$ python3 -m venv planning_tools_env
+$ cd planning_tools_env
+$ source bin/activate
+$ pip install git+https://github.com/johnjung/planning_tools.git
+```
+
+## cardsort
+
+This program builds a similarity matrix from card sort data by calculating the
+[Jaccard index](https://en.wikipedia.org/wiki/Jaccard_index) of each pair of
+items.
+
+For an example of how to structure your data, take a look at
+[sample_data/beer_flavor_wheel.csv](./sample_data/beer_flavor_wheel.csv).
+
+Each line in the file contains three columns. The first is a unique identifier
+for each test- the sample data contains three tests, labelled 'A', 'B', and
+'C'.
+
+The second column contains an identifier, unique to that test, for each
+grouping that a participant created during the ard sort- in this case groupings
+are labelled '01', '02', '03', etc.
+
+The third column contains the item itself. So in the sample data, for test 'A',
+'sherry' was placed into a group by itself, labelled '01', while 'tobacco' and
+'leather' were placed together into a group labelled '02'.
+
+To create a similarity matrix from this data, run the following command:
+
+```console
+cardsort to-matrix sample_data/beer_flavor_wheel.csv
+```
+
+This script works for both open card sorts, where participants can place items
+into whatever groups they like, and closed card sorts, where a certain number
+of groups re pre-selected before the test begins. 
+
+## similarity
+
+This script takes similarity data, similar to what Charles Owen described in
+his book Structured Planning, and converts it to a similarity matrix. 
+
+For an example of how to structure this data, see
+[sample_data/chairs.csv](./sample_data/chairs.csv). (This data is from pg. 146 
+of Structured Planning.)
+
+Data files should contain headers for each column of data, and a label for each
+element in the first column. At the end of the file, after a blank line, are
+four rows that describe each data element. The first of those rows is labelled
+'field_type', which indicates if the data in this field is discrete
+(non-orderable, like 'apples', 'oranges' and 'mangos') or continuous (like the
+numbers 1, 2, 3, 4.)
+
+The next row contains a weight for each field, followed by a match_difference
+and no_match_difference, as described in Structured Planning.
+
+To create a similarity matrix based on data like this:
+
+```console
+similarity to-matrix sample_data/chairs.csv
+```
+
+## matrix
+
+The following command takes an unsorted similarity matrix, whether it was
+produced by a card sort, or a similarity table, or by manual pairwise
+comparisons, and sorts it by using hierarchical clustering. 
+
+```
+$ matrix to-ascii sample_data/fruits_and_vegetables.csv
 
                                                    s                                  
                                          r         t                                  
@@ -131,9 +144,10 @@ $ cat sample_data/fruits_and_vegetables.csv | ./insight_matrix.py fill --upper -
 
 ```
 
-#### Cluster data.
+Cluster the data:
+
 ```
-$ cat sample_data/fruits_and_vegetables.csv | ./insight_matrix.py fill --upper - | ./insight_matrix.py cluster --linkage_method=average - | ./insight_matrix.py show -
+$ matrix cluster --linkage_method=complete sample_data/fruits_and_vegetables.csv
 
                                              s                                        
                                            r t                                        
@@ -178,11 +192,6 @@ $ cat sample_data/fruits_and_vegetables.csv | ./insight_matrix.py fill --upper -
              o n i o n s                               , , , ,   , , ,     ,   , @ , ,
            l e t t u c e                               , , , ,     , ,   ,       , @ =
            s p i n a c h                                 , , ,   , , ,   ,   , , , = @
-```
-
-#### Get clustered data as CSV. 
-```
-$ cat sample_data/fruits_and_vegetables.csv | ./insight_matrix.py fill --upper - | ./insight_matrix.py cluster --linkage_method=average - > clustered_data.csv
 ```
 
 ## Contributing
