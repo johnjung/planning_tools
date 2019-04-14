@@ -20,27 +20,27 @@ from classes import Matrix
 
 
 def main():
-  options = docopt(__doc__)
+    options = docopt(__doc__)
 
-  m = Matrix()
-  if '-' in options:
-    m.import_from_csv(sys.stdin)
+    m = Matrix()
+    if '-' in options:
+        m.import_from_csv(sys.stdin)
 
-  if options['cluster']:
-    if options['--linkage_method']:
-      m.cluster(options['--linkage_method'])
-    else:
-      m.cluster()
-      sys.stdout.write(m.csv())
-      sys.exit()
-  elif options['histogram']:
-    m.histogram()
-    sys.exit()
-  elif options['randomize']:
-    m.randomize()
-    sys.stdout.write(m.csv())
-    sys.exit()
+    if options['cluster']:
+        if options['--linkage_method']:
+            m.cluster(options['--linkage_method'])
+        else:
+            m.cluster()
+            sys.stdout.write(m.csv())
+            sys.exit()
+    elif options['histogram']:
+        m.histogram()
+        sys.exit()
+    elif options['randomize']:
+        m.randomize()
+        sys.stdout.write(m.csv())
+        sys.exit()
 
 
 if __name__ == '__main__':
-  main()
+    main()

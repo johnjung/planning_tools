@@ -10,13 +10,13 @@ from classes import Similarity
 
 
 def main():
-  options = docopt(__doc__)
+    options = docopt(__doc__)
 
-  s = Similarity()
-  if '-' in options:
-    s.import_from_csv(sys.stdin)
-  sys.stdout.write(s.csv())
+    s = Similarity()
+    if '-' in options:
+        s.import_from_csv(sys.stdin)
+    sys.stdout.write(s.csv())
 
 
 if __name__ == '__main__':
-  main()
+    main()
