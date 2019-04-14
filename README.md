@@ -95,6 +95,8 @@ The following command takes an unsorted similarity matrix, whether it was
 produced by a card sort, or a similarity table, or by manual pairwise
 comparisons, and sorts it by using hierarchical clustering. 
 
+To see unsorted data:
+
 ```
 $ matrix to-ascii sample_data/fruits_and_vegetables.csv
 

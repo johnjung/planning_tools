@@ -1,8 +1,9 @@
 #!/usr/bin/env python
 """Usage:
     matrix cluster [--linkage_method=<linkage_method>] <file>
-    matrix to-ascii <file>
     matrix histogram <file>
+    matrix randomize <file>
+    matrix to-ascii <file>
 
    Arguments:
     linkage_method: single
@@ -27,7 +28,7 @@ def main():
         f = sys.stdin
     else:
         f = open(arguments['<file>'], 'r')
-    m.import_from_csv(sys.stdin)
+    m.import_from_csv(f)
 
     if arguments['cluster']:
         if arguments['--linkage_method']:
@@ -38,6 +39,9 @@ def main():
             sys.exit()
     elif arguments['histogram']:
         m.histogram()
+        sys.exit()
+    elif arguments['to-ascii']:
+        sys.stdout.write(m.ascii())
         sys.exit()
     elif arguments['randomize']:
         m.randomize()

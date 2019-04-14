@@ -533,6 +533,7 @@ class Matrix:
                     d.append(0.0)
             data.append(d)
             self.data = numpy.array(data)
+        self.fill()
 
     def width(self):
         return self.data.shape[1]
@@ -584,8 +585,8 @@ class Matrix:
         raise NotImplementedError
 
     def fill(self, upper=True):
-        """Fill in a symmetric matrix by copying the upper triangle to the lower
-           triangle, or vice versa.
+        """Fill in a symmetric matrix by copying the lower triangle to the
+        upper triangle, or vice versa.
 
         :param bool upper: Fill the upper triangle if true, fill the lower
                            triangle if false.
