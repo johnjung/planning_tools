@@ -55,7 +55,7 @@ The third column contains the item itself. So in the sample data, for test 'A',
 To create a similarity matrix from this data, run the following command:
 
 ```console
-cardsort to-matrix sample_data/beer_flavor_wheel.csv
+$ cardsort to-matrix sample_data/beer_flavor_wheel.csv
 ```
 
 This script works for both open card sorts, where participants can place items
@@ -84,7 +84,7 @@ and no_match_difference, as described in Structured Planning.
 To create a similarity matrix based on data like this:
 
 ```console
-similarity to-matrix sample_data/chairs.csv
+$ similarity to-matrix sample_data/chairs.csv
 ```
 
 ## matrix
