@@ -196,8 +196,7 @@ $ matrix cluster --linkage_method=complete sample_data/fruits_and_vegetables.csv
 
 ## Contributing
 
-Please contact the author with pull requests, bug reports, and feature
-requests.
+There are many ways to contribute to this software- you can submit pull requests, bug reports or feature requests, and sample data sets, help with documentation, or use cases are also very welcome. Please contact the author for more information. 
 
 ## Author
 
