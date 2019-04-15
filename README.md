@@ -2,7 +2,7 @@
 
 v.0.0.1
 
-Planning Tools is a set of programs to help with the design planning process. It contains programs to cluster user research data like product features or user needs. It can import data from card sorts, lists of variables describing elements of interest, or manually entered pairwise comparisons. It can cluster data using agglomerative ("bottom-up") hierarchical clustering or graph-based methods, and it can output data as CSV spreadsheets for further processing.  
+Planning Tools is a set of programs to help with the design planning process. It contains programs to cluster user research data like product features or user needs. It can import data from card sorts, lists of variables describing elements of interest, or manually entered pairwise comparisons. It can cluster data using agglomerative ("bottom-up") hierarchical clustering or graph-based methods, and it can output data as CSV spreadsheets for further processing.
 
 ## Quickstart
 
@@ -90,10 +90,10 @@ $ similarity to-matrix sample_data/chairs.csv
 ## matrix
 
 The following command takes an unsorted similarity matrix, whether it was
-produced by a card sort, or a similarity table, or by manual pairwise
+produced by a card sort, a similarity table, or by manual pairwise
 comparisons, and sorts it by using hierarchical clustering. 
 
-To see unsorted data:
+To take a look at unsorted data in the terminal:
 
 ```
 $ matrix to-ascii sample_data/fruits_and_vegetables.csv
