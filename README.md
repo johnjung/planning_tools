@@ -42,12 +42,11 @@ For an example of how to structure your data, take a look at
 [sample_data/beer_flavor_wheel.csv](./sample_data/beer_flavor_wheel.csv).
 
 Each line in the file contains three columns. The first is a unique identifier
-for each test- the sample data contains three tests, labelled 'A', 'B', and
+for each test- the sample data contains three tests. You can label these whatever you would like, but here these are labelled 'A', 'B', and
 'C'.
 
 The second column contains an identifier, unique to that test, for each
-grouping that a participant created during the ard sort- in this case groupings
-are labelled '01', '02', '03', etc.
+grouping that a participant created during the ard sort- again, you could label these whatever you would like, but in this case groupings are labelled '01', '02', '03', etc.
 
 The third column contains the item itself. So in the sample data, for test 'A',
 'sherry' was placed into a group by itself, labelled '01', while 'tobacco' and
