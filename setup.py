@@ -22,12 +22,3 @@ setup(
         'planning_tools/similarity',
     ]
 )
-'''
-    entry_points={
-      'console_scripts': [
-        'cardsort = planning_tools.cardsort:main',
-        'matrix = planning_tools.matrix:main',
-        'similarity = planning_tools.similarity:main'
-      ]
-    }
-'''
