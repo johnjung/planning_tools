@@ -672,10 +672,9 @@ class Matrix:
             upper (bool): Fill the upper triangle if true, fill the lower
             triangle if false.
         """
-        assert self.width() == self.height()
-
-        for x, y in self.get_symmetric_index_pairs(upper):
-            self.data[x, y] = self.data[y, x]
+        if self.is_symmetric():
+            for x, y in self.get_symmetric_index_pairs(upper):
+                self.data[x, y] = self.data[y, x]
 
     def reorder(self, y_order, x_order=None):
         """Reorder the matrix.

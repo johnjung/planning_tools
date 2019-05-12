@@ -1,6 +1,6 @@
 import io
 import unittest
-from insight_matrix import CardSort, Interactions, Matrix
+from planning_tools import CardSort, Interactions, Matrix
 
 
 class TestCardSort(unittest.TestCase):
