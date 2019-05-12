@@ -1,27 +1,13 @@
 # Planning Tools
 
-Planning Tools is a set of programs to help with the design planning process. It contains programs to cluster user research data like product features or user needs. It can import data from card sorts, lists of variables describing elements of interest, or manually entered pairwise comparisons. It can cluster data using agglomerative ("bottom-up") hierarchical clustering or graph-based methods, and it can output data as CSV spreadsheets for further processing.
+Planning Tools is a set of programs to help with the design planning process.
+It contains programs to cluster user research data like product features or
+user needs. It can import data from card sorts, fielded data describing
+elements of interest, or manually entered pairwise comparisons. It can cluster
+data using agglomerative ("bottom-up") hierarchical clustering or graph-based
+methods, and it can output data as CSV spreadsheets for further processing.
 
 ## Quickstart
-
-These programs were written in Python 3. If you would like to run these programs
-on a Mac, you may need to install that version of Python first.
-
-To start, install Homebrew:
-
-```console
-$ ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)"
-```
-
-Then install Python 3:
-
-```console
-$ brew install python
-```
-
-Once you have a working version of Python 3 on your system you can install
-Planning Tools. The following commands set up a Python virtual environment and
-then install the software into that environment:
 
 ```
 $ python3 -m venv planning_tools_env
@@ -30,68 +16,13 @@ $ source bin/activate
 $ pip install git+https://github.com/johnjung/planning_tools.git
 ```
 
-## cardsort
-
-This program builds a similarity matrix from card sort data by calculating the
-[Jaccard index](https://en.wikipedia.org/wiki/Jaccard_index) of each pair of
-items.
-
-For an example of how to structure your data, take a look at
-[sample_data/beer_flavor_wheel.csv](./sample_data/beer_flavor_wheel.csv).
-
-Each line in the file contains three columns. The first is a unique identifier
-for each test- the sample data contains three tests. You can label these whatever you would like, but here these are labelled 'A', 'B', and
-'C'.
-
-The second column contains an identifier, unique to that test, for each
-grouping that a participant created during the ard sort- again, you could label these whatever you would like, but in this case groupings are labelled '01', '02', '03', etc.
-
-The third column contains the item itself. So in the sample data, for test 'A',
-'sherry' was placed into a group by itself, labelled '01', while 'tobacco' and
-'leather' were placed together into a group labelled '02'.
-
-To create a similarity matrix from this data, run the following command:
-
-```console
-$ cardsort to-matrix sample_data/beer_flavor_wheel.csv
-```
-
-This script works for both open card sorts, where participants can place items
-into whatever groups they like, and closed card sorts, where a certain number
-of groups re pre-selected before the test begins. 
-
-## similarity
-
-This script takes similarity data, similar to what Charles Owen described in
-his book Structured Planning, and converts it to a similarity matrix. 
-
-For an example of how to structure this data, see
-[sample_data/chairs.csv](./sample_data/chairs.csv). (This example is from pg. 146 
-of Structured Planning.)
-
-Data files should contain headers for each column of data, and a label for each
-element in the first column. At the end of the file, after a blank line, are
-four rows that describe each data element. The first of those rows is labelled
-'field_type', which indicates if the data in this field is discrete
-(non-orderable, like 'apples', 'oranges' and 'mangos') or continuous (like the
-numbers 1, 2, 3, 4.)
-
-The next row contains a weight for each field, followed by a match_difference
-and no_match_difference, as described in Structured Planning.
-
-To create a similarity matrix based on data like this:
-
-```console
-$ similarity to-matrix sample_data/chairs.csv
-```
-
 ## matrix
 
-The following command takes an unsorted similarity matrix, whether it was
-produced by a card sort, a similarity table, or by manual pairwise
-comparisons, and sorts it by using hierarchical clustering. 
+The matrix command takes an unsorted similarity matrix and clusters it using
+hierarchical clustering. I'll use [fruits and
+vegetables](./sample_data/fruits_and_vegetables.csv) as sample data.
 
-To take a look at unsorted data in the terminal:
+To take a look at the unsorted data in the terminal:
 
 ```
 $ matrix to-ascii sample_data/fruits_and_vegetables.csv
@@ -192,9 +123,69 @@ $ matrix cluster --linkage_method=complete sample_data/fruits_and_vegetables.csv
            s p i n a c h                                 , , ,   , , ,   ,   , , , = @
 ```
 
+
+## cardsort
+
+This program builds a similarity matrix from card sort data by calculating the
+[Jaccard index](https://en.wikipedia.org/wiki/Jaccard_index) of each pair of
+items.
+
+For an example of how to structure your data, take a look at
+[sample_data/beer_flavor_wheel.csv](./sample_data/beer_flavor_wheel.csv).
+
+Each line in the file contains three columns. The first is a unique identifier
+for each test- the sample data contains three tests. You can label these
+whatever you would like, but here these are labelled 'A', 'B', and 'C'.
+
+The second column contains an identifier, unique to that test, for each
+grouping that a participant created during the ard sort- again, you could label
+these whatever you would like, but in this case groupings are labelled '01',
+'02', '03', etc.
+
+The third column contains the item itself. So in the sample data, for test 'A',
+'sherry' was placed into a group by itself, labelled '01', while 'tobacco' and
+'leather' were placed together into a group labelled '02'.
+
+To create a similarity matrix from this data, run the following command:
+
+```console
+$ cardsort to-matrix sample_data/beer_flavor_wheel.csv
+```
+
+This script works for both open card sorts, where participants can place items
+into whatever groups they like, and closed card sorts, where a certain number
+of groups re pre-selected before the test begins. 
+
+## similarity
+
+This script takes similarity data, similar to what Charles Owen described in
+his book Structured Planning, and converts it to a similarity matrix. 
+
+For an example of how to structure this data, see
+[sample_data/chairs.csv](./sample_data/chairs.csv). (This example is from pg. 146 
+of Structured Planning.)
+
+Data files should contain headers for each column of data, and a label for each
+element in the first column. At the end of the file, after a blank line, are
+four rows that describe each data element. The first of those rows is labelled
+'field_type', which indicates if the data in this field is discrete
+(non-orderable, like 'apples', 'oranges' and 'mangos') or continuous (like the
+numbers 1, 2, 3, 4.)
+
+The next row contains a weight for each field, followed by a match_difference
+and no_match_difference, as described in Structured Planning.
+
+To create a similarity matrix based on data like this:
+
+```console
+$ similarity to-matrix sample_data/chairs.csv
+```
+
 ## Contributing
 
-There are many ways to contribute to this software- you can submit pull requests, bug reports or feature requests, and sample data sets, help with documentation, or use cases are also very welcome. Please contact the author for more information. 
+There are many ways to contribute to this software- your pull requests, bug
+reports, feature requests, sample data sets, and use cases are all very
+welcome.  Please contact the author for more information. 
 
 ## Author
 
