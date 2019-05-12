@@ -11,31 +11,73 @@ from scipy.cluster.hierarchy import dendrogram, linkage
 
 
 class CardSort:
-    """
-    A class to import card sort data into a similarity matrix. Similarity data is
-    calculated with a Jaccard index: see
-    https://en.wikipedia.org/wiki/Jaccard_index.
+    """Build a similarity matrix from card sort data.
 
-    The tests property is a dictionary for card sort data: e.g.
-    {
-      'test a': {
-        'group a': set(('item 1', 'item 2')),
-        'group b': set(('item 3',))
-      },
-      'test b': {
-        'group a': set(('item 1',)),
-        'group b': set(('item 2', 'item 3'))
-      }
-    }
+    Notes:
+        Record card sort data in a .csv file with three columns:
+
+        field 1) participant identifier.
+        field 2) group identifier.
+        field 3) item.
+
+        Taken together, fields 1 and 2 should uniquely identify a row in the
+        input data. This code works for both closed card sorts, where group
+        names are determined before test time, and open card sorts, where
+        participants choose their own groups. Groups can be named (e.g. "citrus
+        fruits", "starchy vegetables", etc.) but the algorithm for determining
+        similarity will ignore group names.
+
+        Within an indiviual test, items can be placed in multiple groups. If 
+        a participant forms a group of items that don't fit into any other
+        group, they should be excluded rather than placed into a
+        "miscellaneous" group.
+
+    Example:
+        A,01,sherry
+        A,02,tobacco
+        A,02,leather
+        B,01,confiture
+        B,02,yarrow
+        B,03,celery
+        C,01,onion
+        C,02,confiture
+        C,03,yarrow
+
+        The data above records groupings from three different participants: A,
+        B and C. Participant A created two different groups, labelled '01' and
+        '02' here. Group '01' contains a single item (sherry) and group '02'
+        contains two items: tobacco and leather. Participants B and C each
+        created three groups, labelled '01', '02', and '03', which are distinct
+        from each other and the groups created by participant A.
+
+    References:
+        Jaccard index: https://en.wikipedia.org/wiki/Jaccard_index
     """
 
     def __init__(self):
+        """Constructor
+
+        Notes:
+            The tests property is a dictionary for representing card sort data:
+            e.g.:
+                {
+                  'participant A': {
+                    'group 1': set(('item i', 'item ii')),
+                    'group 2': set(('item iii',))
+                  },
+                  'participant B': {
+                    'group 1': set(('item i',)),
+                    'group 2': set(('item ii', 'item iii'))
+                  }
+                }
+        """
         self.tests = {}
 
     def import_from_csv(self, csv_file):
         """Load data from a CSV file.
 
-        :param csv_file: a file-like object.
+        Args:  
+            csv_file: a file-like object.
         """
         reader = csv.reader(csv_file)
 
@@ -50,12 +92,13 @@ class CardSort:
     def get_groups(self):
         """Get a flat list of sets, all groups from all tests. e.g.:
         [
-          set(('item 1',)),
-          set(('item 2', 'item 3')),
-          ...
+        set(('item 1',)),
+        set(('item 2', 'item 3')),
+        ...
         ]
-        :rtype list
-        :returns a list of sets.
+
+        Returns:
+            list: a list of sets.
         """
         return [g for t in self.tests.values() for g in t.values()]
 
@@ -63,19 +106,20 @@ class CardSort:
         """Get a sorted list of unique elements that appeared in any tests, e.g.:
         ['apples', 'bananas', 'oranges']
 
-        :rtype list
-        :returns a unique list of elements from the card sort.
+        Returns:
+            list: a unique list of elements from the card sort.
         """
         return sorted(set([e for g in self.get_groups() for e in g]))
 
     def get_jaccard(self, a, b):
         """Get the Jaccard index of two elements.
 
-        :param str a: an element from the card sort.
-        :param str b: an element from the card sort.
+        Args:
+            a (str): an element from the card sort.
+            b (str): an element from the card sort.
 
-        :rtype float
-        :returns a number between 0.0 and 1.0, inclusive.
+        Returns:
+            float: a number between 0.0 and 1.0, inclusive.
         """
         elements = set([a, b])
         counts = []
@@ -89,8 +133,8 @@ class CardSort:
         """Get indices for the lower triangle of a matrix, e.g.:
         [(1, 0), (2, 0), (2, 1)]
 
-        :rtype list
-        :returns a list of tuples.
+        Returns:
+            list: a list of tuples.
         """
         elements = self.get_elements()
         return [(y, x) for y in range(len(elements)) for x in range(y)]
@@ -98,9 +142,9 @@ class CardSort:
     def get_similarity_data(self):
         """Get a two-dimensional list of similarity data.
 
-        :rtype list
-        :returns a list of lists, where each row contains similarity data (floats)
-        from 0.0 to 1.0
+        Returns:
+            list: a list of lists, where each row contains similarity data
+            (floats) from 0.0 to 1.0
         """
         elements = self.get_elements()
         data = [['' for i in range(len(elements))]
@@ -116,8 +160,7 @@ class CardSort:
         return data
 
     def csv(self):
-        """Write a CSV file to a file.
-        """
+        """Get CSV output as a string."""
         output = io.StringIO()
         writer = csv.writer(output)
         labels = sorted(list(self.get_elements()))
@@ -132,12 +175,20 @@ class CardSort:
 
 
 class Interactions:
-    """
-    Each mapping contains a numerator and a denominator- because the numerator
-    is always a subset of the demoninator, it gets added automatically during
-    processing below. Additionally, because the numerators and denominators of
-    +/- measures are the unions of their respective positive and negative
-    measures, those get added during initialization. 
+    """Build a matrix of similarity data for two different sets: e.g.,
+    requirements and project features.
+
+    The code is designed to reveal affinities and tensions between different
+    things in the planning process: for example, if low cost and comfort are
+    both user requirements for a trip on an airplane, a measure of conflict 
+    might reveal "seating leg room" as a trouble spot.
+
+    The mappings in this class each contain a numerator and a denominator,
+    labelled 'n' and 'd'. Because the numerator is always a subset of the 
+    denominator, it gets added automatically during processing below.
+    Additionally, because the numerators and denominators of +/- measures are
+    the unions of their respective positive and negative measures, those get
+    added during initialization. 
 
     RELATN measures:
 
@@ -236,8 +287,7 @@ class Interactions:
     }
 
     def __init__(self):
-        """Initialize an interaction object.
-        """
+        """Constructor"""
         for m in ('conflict', 'reinforcement', 'independence',
                   'conflict + reinforcement', 'conflict + independence',
                   'reinforcement + independence'):
@@ -249,7 +299,8 @@ class Interactions:
     def import_from_csv(self, csv_file):
         """Load data from a CSV file.
 
-        :param csv_file: a file-like object.
+        Args:
+            csv_file: a file-like object.
         """
         reader = csv.reader(csv_file)
 
@@ -277,20 +328,21 @@ class Interactions:
                 a_pos=False, b_neg=False, b_nil=False, b_pos=False):
         """Get the unweighted interaction between two variables.
 
-        :param float a:       a variable, from neg_min to pos_max.
-        :param float b:       a variable, from neg_min to pos_max.
-        :param float neg_min: minimum value for a or b.
-        :param float pos_max: maximum value for a or b.
-        :param bool a_neg:    return interactions where a < 0
-        :param bool a_nil:    return interactions where a == 0
-        :param bool a_pos:    return interactions where a > 0
-        :param bool b_neg:    return interactions where b < 0
-        :param bool b_nil:    return interactions where b == 0
-        :param bool b_pos:    return interactions where b > 0
+        Args:
+            a (float):       a variable, from neg_min to pos_max.
+            b (float):       a variable, from neg_min to pos_max.
+            neg_min (float): minimum value for a or b.
+            pos_max (float): maximum value for a or b.
+            a_neg (bool):    return interactions where a < 0
+            a_nil (bool):    return interactions where a == 0
+            a_pos (bool):    return interactions where a > 0
+            b_neg (bool):    return interactions where b < 0
+            b_nil (bool):    return interactions where b == 0
+            b_pos (bool):    return interactions where b > 0
 
-        :rtype float
-        :returns the unweighted interaction between two variables, from 0.0 to 1.0
-        inclusive.
+        Returns:
+            float: the unweighted interaction between two variables, from 0.0
+            to 1.0 inclusive.
         """
         assert sum((a_neg, a_nil, a_pos)) == 1
         assert sum((b_neg, b_nil, b_pos)) == 1
@@ -322,11 +374,12 @@ class Interactions:
     def balance(self, a, b):
         """Get the balancing factor for two elements.
 
-        :param int a: index of element a.
-        :param int b: index of element b.
+        Args:
+            a (int): index of element a.
+            b (int): index of element b.
 
-        :rtype float
-        :returns the balancing factor.
+        Returns:
+            float: the balancing factor.
         """
         supports_a = len([i for i in self.data[a] if i > 0])
         supports_b = len([i for i in self.data[b] if i > 0])
@@ -335,13 +388,14 @@ class Interactions:
     def filtered_interaction(self, a, b, variation='conflict + reinforcement', filter=set()):
         """Get the weighted interaction between two elements.
 
-        :param int a: index for element a.
-        :param int b: index for element b.
-        :param str variation: type of interaction. (see mappings.)
-        :param set filter: elements to remove, for balancing equations. 
+        Args:
+            a (int): index for element a.
+            b (int): index for element b.
+            variation (str): type of interaction. (see mappings.)
+            filter (set): elements to remove, for balancing equations. 
 
-        :rtype float
-        :returns the weighted interaction between two elements.
+        Returns:
+            float: the weighted interaction between two elements.
         """
         assert variation in self.mappings
 
@@ -387,14 +441,28 @@ class Interactions:
 
 
 class Similarity:
+    """Build a similarity matrix from fielded data.
+
+    Notes:
+        This class takes a .csv as input and produces a similarity matrix as
+        output. CSV data for input should include one record per row. Fields
+        may be continuous data, like floating point numbers from 0.0 to 1.0;
+        discrete data, like integers from 1 to 10; or categorical data, like 
+        'suv', 'compact', 'sport', or 'sedan'.
+
+        Weights can be assigned to different fields to alter their relative
+        importance. 
+    """
     def __init__(self):
+        """Constructor"""
         self.records = None
         self.fields = None
 
     def import_from_csv(self, csv_file):
-        """Load similarity data from a YAML file.
+        """Load similarity data from a .csv file.
 
-        :param csv_file: a file-like object.
+        Args:
+            csv_file: a file-like object.
         """
         reader = csv.reader(csv_file)
         fields = next(reader, None)[1:]
@@ -429,11 +497,12 @@ class Similarity:
     def field_similarity(self, a, b, field):
         """Get an unweighted similarity score between two fields.
 
-        :param str a: a field label for the first record.
-        :param str b: a field label for the second record.
+        Args:
+            a (str): a field label for the first record.
+            b (str): a field label for the second record.
 
-        :rtype float
-        :returns a number between 0.0 and 1.0, inclusive. 
+        Returns:
+            float: a number between 0.0 and 1.0, inclusive. 
         """
         if self.fields[field]['field_type'] == 'discrete':
             return float(self.records[a][field] == self.records[b][field])
@@ -452,13 +521,14 @@ class Similarity:
     def record_similarity(self, a, b, mode='01'):
         """Get a weighted similarity score between two records.
 
-        :param str a: a field label for the first record.
-        :param str b: a field label for the second record.
-        :param str mode: alternate formulas for calculating similarity, see S.P.
-                         p. 157.
+        Args:
+            a (str): a field label for the first record.
+            b (str): a field label for the second record.
+            mode (str): alternate formulas for calculating similarity, see S.P.
+            p. 157.
 
-        :rtype float
-        :returns a float between 0.0 and 1.0, inclusive. 
+        Returns:
+            float: a float between 0.0 and 1.0, inclusive. 
         """
         scores = []
         for field in self.records[a].keys():
@@ -484,8 +554,8 @@ class Similarity:
     def csv(self):
         """Output a similarity matrix in CSV format.
 
-        :rtype str
-        :returns a string with CSV data.
+        Returns:
+            str: a string with CSV data.
         """
         output = io.StringIO()
         writer = csv.writer(output)
@@ -505,6 +575,13 @@ class Similarity:
 
 
 class Matrix:
+    """A class to manipulate matrix objects.
+
+    Notes:
+        This class includes methods to manipulate matrices of data, e.g. by 
+        clustering and sorting them. It uses scipy to produce a dendrogram
+        for sorting information.
+    """
     def __init__(self):
         """Initialize the Matrix object.
         """
@@ -516,7 +593,8 @@ class Matrix:
     def import_from_csv(self, csv_file):
         """Imports data and labels from a CSV file.
 
-        :param csv_file: a file-like object.
+        Args:
+            csv_file: a file-like object.
         """
         data = []
 
@@ -543,15 +621,16 @@ class Matrix:
 
     def max(self):
         """
-        :rtype float
-        :returns the maximum value in the matrix. 
+        Returns:
+            float: the maximum value in the matrix.
         """
         return max(self.data.reshape(-1,).tolist())
 
     def is_symmetric(self):
         """Check to be sure a matrix is symmetric. 
 
-        :rtype bool 
+        Returns:
+            bool
         """
         if self.width() != self.height():
             return False
@@ -568,11 +647,12 @@ class Matrix:
         """Get all the index pairs necessary for a symmetric matrix,
            for either the upper or lower triangle of the matrix. 
 
-        :param bool upper: if True return indices for an upper triangle, if
-                           False return indices for a lower triangle.
+        Args:
+            upper (bool): if True return indices for an upper triangle, if
+            False return indices for a lower triangle.
 
-        :rtype list
-        :returns a list of index pairs. 
+        Returns:
+            list: index pairs. 
         """
         assert self.width() == self.height()
 
@@ -588,8 +668,9 @@ class Matrix:
         """Fill in a symmetric matrix by copying the lower triangle to the
         upper triangle, or vice versa.
 
-        :param bool upper: Fill the upper triangle if true, fill the lower
-                           triangle if false.
+        Args:
+            upper (bool): Fill the upper triangle if true, fill the lower
+            triangle if false.
         """
         assert self.width() == self.height()
 
@@ -599,9 +680,10 @@ class Matrix:
     def reorder(self, y_order, x_order=None):
         """Reorder the matrix.
 
-        :param list y_order: indices for the new y matrix order.
-        :param list x_order: indices for the new x matrix order, or None for
-                             symmetric matrices. 
+        Args:
+            y_order (list): indices for the new y matrix order.
+            x_order (list): indices for the new x matrix order, or None for
+                            symmetric matrices. 
         """
         if self.is_symmetric():
             x_order = y_order
@@ -621,9 +703,10 @@ class Matrix:
     def cluster(self, linkage_method='complete'):
         """Cluster similarity/distance data to get a new index order.
 
-        :param str linkage_method: e.g., 'single', 'complete', 'average',
-                                   'weighted', 'median', 'ward', see
-                                   https://docs.scipy.org/doc/scipy/reference/generated/scipy.cluster.hierarchy.linkage.html.
+        Args:
+            linkage_method (str): e.g., 'single', 'complete', 'average',
+            'weighted', 'median', 'ward', see
+            https://docs.scipy.org/doc/scipy/reference/generated/scipy.cluster.hierarchy.linkage.html.
         """
         index_order = dendrogram(
             linkage(self.data, linkage_method),
@@ -635,8 +718,7 @@ class Matrix:
         self.reorder(index_order)
 
     def randomize(self):
-        """Randomize the matrix, e.g. for testing. 
-        """
+        """Randomize the matrix, e.g. for testing."""
         y_indices = list(range(self.height()))
         random.shuffle(y_indices)
         if self.is_symmetric():
@@ -649,8 +731,8 @@ class Matrix:
     def csv(self):
         """Exports data and labels to a CSV string.
 
-        :rtype str
-        :returns CSV data.
+        Returns: 
+           str: returns CSV data.
         """
         output = io.StringIO()
         writer = csv.writer(output)
@@ -666,8 +748,8 @@ class Matrix:
 
     def ascii(self):
         """
-        :rtype str
-        :returns an ASCII-art representation of the matrix and labels.
+        Returns:
+           str: an ASCII-art representation of the matrix and labels.
         """
         to_ascii = numpy.vectorize(lambda c: ' .,:-=+*#%@'[int(c * 10)])
 
@@ -712,19 +794,6 @@ class Matrix:
 
     def histogram(self):
         coefficients = []
-        # do I need to be able to push the triangle down one?
-        # left align
-        # '{:<16}'
-        # '{:10}'
-        # combine truncation and padding:
-        # '{:10.10}'
-        # right aligned, space before number.
-        # '{:4d'
-        # space in front of positive number
-        # '{: f}'
-        # 6 chars wide, 2 after decimal point.
-        # if no. is short it gets right padded.
-        # '{:6.2f}'
         for y, x in self.get_symmetric_index_pairs(upper=False):
             coefficients.append(self.data[y, x])
 
