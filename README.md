@@ -19,7 +19,8 @@ $ pip install git+https://github.com/johnjung/planning_tools.git
 ## matrix
 
 The matrix command takes an unsorted similarity matrix and clusters it using
-hierarchical clustering. I'll use [fruits and
+hierarchical clustering. For small data sets you can compare these values pairwise 
+and enter them into a spreadsheet manually; I'll use [fruits and
 vegetables](./sample_data/fruits_and_vegetables.csv) as sample data.
 
 To take a look at the unsorted data in the terminal:
