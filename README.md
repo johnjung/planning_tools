@@ -20,10 +20,19 @@ $ pip install git+https://github.com/johnjung/planning_tools.git
 
 The matrix command takes an unsorted similarity matrix and clusters it using
 hierarchical clustering. For small data sets you can compare these values pairwise 
-and enter them into a spreadsheet manually; I'll use [fruits and
-vegetables](./sample_data/fruits_and_vegetables.csv) as sample data.
+and enter them into a spreadsheet manually; for an example matrix look at [sample_data/fruits_and_vegetables.csv](./sample_data/fruits_and_vegetables.csv).
 
-To take a look at the unsorted data in the terminal:
+You can enter pairwise comparisons like this in any spreadsheet. All items being clustered should be listed
+in row and column headers. These headers should be sorted the same way so that the cells on the diagonal from the top left to the bottom right
+each receive a 1.0 score, meaning that every element is perfectly similar to itself.
+
+A score of 0.0 means that the two elements being compared have nothing in common, while scores
+in between indicate increasing amounts of similarity. 
+
+Finally, in input data it's not necessary to include the upper triangle of the matrix (cells above the diagonal)
+because those cells perfectly mirror the cells in the lower triangle- the matrix script will fill in the blanks. 
+
+To take a look at an ASCII art visualization of the unsorted data in the terminal:
 
 ```
 $ matrix to-ascii sample_data/fruits_and_vegetables.csv
