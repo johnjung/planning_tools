@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<h1>Matrix</h1>
+{% endblock %}
+
+{% block content %}
+<form action="/matrix/" method="post" enctype="multipart/form-data">
+<label for="file">Select file to upload:</label>
+<input type="file" name="file" id="file">
+<label for="linkage">Linkage method:</label>
+<select name="linkage" id="linkage">
+  <option value="single">single</option>
+  <option value="complete">complete</option>
+  <option value="average">average</option>
+  <option value="weighted">weighted</option>
+  <option value="median">median</option>
+  <option value="ward">ward</option>
+</select>
+<input type="submit" value="Upload" name="submit">
+</form>
+
+<h2>Sample Data</h2>
+<p><a href="#">Fruits and Vegetables</a></p>
+
+<h2>Notes</h2>
+<p>Cluster a similarity matrix.</p>
+{% endblock %}

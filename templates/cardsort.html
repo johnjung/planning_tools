@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<h1>Card Sort</h1>
+{% endblock %}
+
+{% block content %}
+<form action="/cardsort/" method="post" enctype="multipart/form-data">
+<label for="file">Select file to upload:</label>
+<input type="file" name="file" id="file">
+<input type="submit" value="Upload" name="submit">
+</form>
+
+<h2>Sample Data</h2>
+<p><a href="#">Beer Flavor Wheel</a></p>
+
+<h2>Notes</h2>
+<p>Record card sort data in a .csv file with three columns:</p>
+
+<ol>
+  <li>participant identifier</li>
+  <li>group identifier</li>
+  <li>item</li>
+</ol>
+
+<p>Taken together, fields 1 and 2 should uniquely identify a row in the input
+data. This code works for both closed card sorts, where group names are
+determined before test time, and open card sorts, where participants choose
+their own groups. Groups can be named (e.g. "citrus fruits", "starchy
+vegetables", etc.) but the algorithm for determining similarity will ignore
+group names.</p>
+
+<p>Within an indiviual test, items can be placed in multiple groups. If a
+participant forms a group of items that don't fit into any other group, they
+should be excluded rather than placed into a "miscellaneous" group.</p>
+
+<h2>Example</h2>
+<pre><code>A,01,sherry
+A,02,tobacco
+A,02,leather
+B,01,confiture
+B,02,yarrow
+B,03,celery
+C,01,onion
+C,02,confiture
+C,03,yarrow</code></pre>
+
+<p>The data above records groupings from three different participants: A, B and
+C. Participant A created two different groups, labelled '01' and '02' here.
+Group '01' contains a single item (sherry) and group '02' contains two items:
+tobacco and leather. Participants B and C each created three groups, labelled
+'01', '02', and '03', which are distinct from each other and the groups created
+by participant A.</p>
+
+<h2>References</h2>
+<ul>
+  <li><a href="https://en.wikipedia.org/wiki/Jaccard_index">Jaccard Index</a></li>
+</ul>
+{% endblock %}

@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<h1>Interactions</h1>
+{% endblock %}
+
+{% block content %}
+<form action="/interactions/" method="post" enctype="multipart/form-data">
+<label for="file">Select file to upload:</label>
+<input type="file" name="file" id="file">
+<label for="relatin_measure">Linkage method:</label>
+<select name="relatin_measure" id="relatin_measure">
+  <option value="04">conflict</option>
+  <option value="05">reinforcement</option>
+  <option value="06">independence</option>
+  <option value="07">conflict + reinforcement</option>
+  <option value="08">conflict + independence</option>
+  <option value="09">reinforcement + independence</option>
+  <option value="10">negative conflict</option>
+  <option value="11">negative reinforcement</option>
+  <option value="12">negative independence</option>
+  <option value="13">negative conflict + reinforcement</option>
+  <option value="14">negative conflict + independence</option>
+  <option value="15">negative reinforcement + independence</option>
+  <option value="16">positive / negative conflict</option>
+  <option value="17">positive / negative reinforcement</option>
+  <option value="18">positive / negative independence</option>
+  <option value="19">positive / negative conflict + reinforcement</option>
+  <option value="20">positive / negative conflict + independence</option>
+  <option value="21">positive / negative reinforcement + independence</option>
+</select>
+<input type="submit" value="Upload" name="submit">
+</form>
+
+<h2>Sample Data</h2>
+<p><a href="#">Fruits and Vegetables</a></p>
+
+<h2>Notes</h2>
+<p>Cluster two unlike sets.</p>
+{% endblock %}

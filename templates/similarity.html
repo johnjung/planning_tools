@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+
+{% block header %}
+<h1>Similarity</h1>
+{% endblock %}
+
+{% block content %}
+<form action="/similarity/" method="post" enctype="multipart/form-data">
+<label for="file">Select file to upload:</label>
+<input type="file" name="file" id="file">
+<input type="submit" value="Upload" name="submit">
+</form>
+
+<h2>Sample Data</h2>
+<p><a href="#">Chairs</a></p>
+
+<h2>Notes</h2>
+<p>This class takes a .csv as input and produces a similarity matrix as output.
+CSV data for input should include one record per row. Fields may be continuous
+data, like floating point numbers from 0.0 to 1.0; discrete data, like integers
+from 1 to 10; or categorical data, like 'suv', 'compact', 'sport', or
+'sedan'.</p>
+
+<p>Weights can be assigned to different fields to alter their relative
+importance.</p>
+{% endblock %}
