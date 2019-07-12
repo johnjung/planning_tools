@@ -1,6 +1,14 @@
 #!/usr/bin/env python
 """Usage:
     cardsort <linkage-method> <file>
+
+   Arguments:
+    linkage_method: single
+                    complete
+                    average
+                    weighted
+                    median
+                    ward
 """
 
 import sys
