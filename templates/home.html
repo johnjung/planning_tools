@@ -4,10 +4,18 @@
     <title>{% block title %}{% endblock %} - Planning Tools</title>
     <style>
       table {
+        left: 50%;
         margin: 0 auto;
+        position: absolute;
+        top: 50%;
+        transform: translate(-50%, -50%);
       }
       th {
         text-align: right;
+        vertical-align: top;
+      }
+      th, tr {
+        padding: 0.5em;
       }
     </style>
   </head>
@@ -20,30 +28,26 @@
     <form action="/" method="post" enctype="multipart/form-data">
       <table>
         <tr>
-          <th><label for="file">Select file to upload:</label></th>
+          <th><label for="file">Upload data:</label></th>
 	  <td><input type="file" name="file" id="file"></td>
 	</tr>
         <tr>
-          <th><label for="file_type"><a href="#card_sort_notes">This file contains</a>:</label></th>
+          <th><label for="file_type">This file contains:</label></th>
 	  <td>
-            <select name="file_type" id="file_type">
-              <option>card sort data</option>
-	      <option>pairwise comparisons</option>
-              <option>fielded data</option>
-            </select>
+            <input name="file_type" type="radio" value="card sort data"/> card sort data (<a href="#">?</a>)<br/>
+	    <input checked="checked" name="file_type" type="radio" value="pairwise comparisons"/> pairwise comparisons (<a href="#">?</a>)<br/>
+            <input name="file_type" type="radio" value="fielded data"/> fielded data (<a href="#">?</a>)
           </td>
         </tr>
 	<tr>
-          <th><label for="linkage">Cluster using this <a href="https://docs.scipy.org/doc/scipy/reference/generated/scipy.cluster.hierarchy.linkage.html">linkage method</a>:</label></th>
+          <th><label for="linkage">Cluster using this linkage method (<a href="#">?</a>):</label></th>
           <td>
-            <select name="linkage" id="linkage">
-              <option value="single">single</option>
-              <option value="complete">complete</option>
-              <option value="average">average</option>
-              <option value="weighted">weighted</option>
-              <option value="median">median</option>
-              <option value="ward">ward</option>
-            </select>
+            <input checked="checked" name="linkage" type="radio" value="single"/> single<br/>
+            <input name="linkage" type="radio" value="complete"/> complete<br/>
+            <input name="linkage" type="radio" value="average"/> average<br/>
+            <input name="linkage" type="radio" value="weighted"/> weighted<br/>
+            <input name="linkage" type="radio" value="median"/> median<br/>
+            <input name="linkage" type="radio" value="ward"/> ward
           </td>
         </tr>
         <tr>
@@ -52,72 +56,3 @@
         </tr>
       </table>
     </form>
-
-    <h2 id="card_sort_notes"><a href="#top">&#8598;</a>Card Sort Sample Data</h2>
-
-    <p>You can use this form to cluster data from closed card sorts, where
-    group names are determined before test time, or open card sorts, where
-    participants choose their own groups or leave groups unnamed.</p>
-    
-    <p>Record card sort data in a .csv file with three columns:</p>
-
-    <ol>
-      <li>test or participant identifier</li>
-      <li>card sort group identifier</li>
-      <li>item</li>
-    </ol>
-
-    <p>The snippet below records data from three different card sorts, labelled
-    A, B and C. Participant A created two different groups, labelled '01' and
-    '02' here.  Group '01' contains a single item (sherry) and group '02'
-    contains two items: tobacco and leather. Participants B and C each created
-    three groups, labelled '01', '02', and '03'.</p>
-
-    <pre><code>A,01,sherry
-A,02,tobacco
-A,02,leather
-B,01,confiture
-B,02,yarrow
-B,03,celery
-C,01,onion
-C,02,confiture
-C,03,yarrow</code></pre>
-
-    <p><em>Sample data from <a href="/planning_tools/sample_data/beer_flavor_wheel.csv">beer_flavor_wheel.csv</a>.</em></p>
-
-    <h2 id="pairwise_comparison_notes"><a href="#top">&#8598;</a>Pairwise Comparisons Sample Data</h2>
-
-    <p>Use the pairwise comparison option to cluster a symmetric matrix
-    containing similarity scores comparing items against each other. 
-    The matrix should have an equal number of row and column headers, 
-    sorted the same way. The lower triangle of the matrix should include
-    similarity scores from 0.0 to 1.0, where a higher score means items
-    are more like each other.</p>
-
-    <p>In the sample below you can see that along the diagonal, each pair of
-    items gets a score of 1- because each item is perfectly similar to itself. 
-    Grapefruit and raspberries have a similarity score of 0.25.</p>
-
-    <pre><code>,squash,cucumbers,figs,beans,avocados,lemons,grapefruit,raspberries
-squash,1,,,,,,,
-cucumbers,0,1,,,,,,
-figs,0,0,1,,,,,
-beans,0,0.25,0,1,,,,
-avocados,0,0,0,0,1,,,
-lemons,0,0,0,0,0,1,,
-grapefruit,0,0,0.25,0,0,0.25,1,
-raspberries,0,0,0.25,0,0,0,0.25,1</code></pre>
-
-    <p><em>Sample data from <a href="/planning_tools/sample_data/fruits_and_vegetables.csv">fruits_and_vegetables.csv</a>.</em></p>
-
-    <h2 id="fielded_data_notes"><a href="#top">&#8598;</a>Fielded Sample Data</h2>
-    <p>This class takes a .csv as input and produces a similarity matrix as output.
-    CSV data for input should include one record per row. Fields may be continuous
-    data, like floating point numbers from 0.0 to 1.0; discrete data, like integers
-    from 1 to 10; or categorical data, like 'suv', 'compact', 'sport', or
-    'sedan'.</p>
-    
-    <p>Weights can be assigned to different fields to alter their relative
-    importance.</p>
-
-    <p><em>Sample data from <a href="/planning_tools/sample_data/chairs.csv">chairs.csv</a>.</em></p>
