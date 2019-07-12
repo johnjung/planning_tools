@@ -1,25 +1,39 @@
 #!/usr/bin/env python
 """Usage:
-    similarity to-matrix <file>
+    similarity <linkage-method> <file>
+
+   Arguments:
+    linkage_method: single
+                    complete
+                    average
+                    weighted
+                    median
+                    ward
 """
 
 import sys
 
 from docopt import docopt
-from planning_tools import Similarity
+from io import StringIO
+from classes import Matrix, Similarity
 
 
 def main():
     arguments = docopt(__doc__)
 
     s = Similarity()
-    if arguments['to-matrix']:
-        if arguments['<file>'] == '-':
-            f = sys.stdin
-        else:
-            f = open(arguments['<file>'], 'r')
-        s.import_from_csv(f)
-    sys.stdout.write(s.csv())
+    if arguments['<file>'] == '-':
+        f = sys.stdin
+    else:
+        f = open(arguments['<file>'], 'r')
+    s.import_from_csv(f)
+
+    if arguments['<linkage-method>'] in ('single', 'complete', 'average',
+        'weighted', 'median', 'ward'):
+        m = Matrix()
+        m.import_from_csv(StringIO(s.csv()))
+        m.cluster(arguments['<linkage-method>'])
+        sys.stdout.write(m.csv())
 
 
 if __name__ == '__main__':
