@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 """Usage:
-    similarity <linkage-method> <file>
+    pairwise <linkage-method> <file>
 
    Arguments:
     linkage_method: single
@@ -10,30 +10,24 @@
                     median
                     ward
 """
-
 import sys
 
 from docopt import docopt
-from io import StringIO
-from classes import Matrix, Similarity
+from classes import Matrix
 
 
 def main():
     arguments = docopt(__doc__)
 
-    s = Similarity()
+    m = Matrix()
     if arguments['<file>'] == '-':
         f = sys.stdin
     else:
         f = open(arguments['<file>'], 'r')
-    s.import_from_csv(f)
+    m.import_from_csv(f)
 
-    if arguments['<linkage-method>'] in ('single', 'complete', 'average',
-        'weighted', 'median', 'ward'):
-        m = Matrix()
-        m.import_from_csv(StringIO(s.csv()))
-        m.cluster(arguments['<linkage-method>'])
-        sys.stdout.write(m.csv())
+    m.cluster(arguments['<linkage-method>'])
+    sys.stdout.write(m.csv())
 
 
 if __name__ == '__main__':

@@ -167,7 +167,7 @@ class CardSort:
         data = self.get_similarity_data()
 
         writer = csv.writer(output)
-        writer.writerow([] + labels)
+        writer.writerow([''] + labels)
         for y in range(len(data)):
             writer.writerow([labels[y]] + data[y])
 
@@ -634,13 +634,8 @@ class Matrix:
         """
         if self.width() != self.height():
             return False
-
         if self.x_labels != self.y_labels:
             return False
-
-        for x, y in self.get_symmetric_index_pairs():
-            if self.data[y, x] != self.data[x, y]:
-                return False
         return True
 
     def get_symmetric_index_pairs(self, upper=True):

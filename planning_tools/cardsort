@@ -1,24 +1,38 @@
 #!/usr/bin/env python
 """Usage:
-    cardsort to-matrix <file>
+    cardsort <linkage-method> <file>
+
+   Arguments:
+    linkage_method: single
+                    complete
+                    average
+                    weighted
+                    median
+                    ward
 """
 
 import sys
 
 from docopt import docopt
-from planning_tools import CardSort
+from io import StringIO
+from classes import CardSort, Matrix
 
 def main():
     arguments = docopt(__doc__)
 
     c = CardSort()
-    if arguments['to-matrix']:
-        if arguments['<file>'] == '-':
-            f = sys.stdin
-        else:
-            f = open(arguments['<file>'], 'r')
-        c.import_from_csv(f)
-    sys.stdout.write(c.csv())
+    if arguments['<file>'] == '-':
+        f = sys.stdin
+    else:
+        f = open(arguments['<file>'], 'r')
+    c.import_from_csv(f)
+
+    if arguments['<linkage-method>'] in ('single', 'complete', 'average',
+        'weighted', 'median', 'ward'):
+        m = Matrix()
+        m.import_from_csv(StringIO(c.csv()))
+        m.cluster(arguments['<linkage-method>'])
+        sys.stdout.write(m.csv())
 
 
 if __name__=='__main__':
