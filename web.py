@@ -1,6 +1,7 @@
 import csv
 import os
 from flask import Flask, flash, make_response, render_template, request
+from io import TextIOWrapper
 from planning_tools.classes import Matrix
 from werkzeug.utils import secure_filename
 
@@ -13,12 +14,9 @@ def home():
     if request.method == 'GET':
         return render_template('home.html')
     elif request.method == 'POST':
-        f = None
-        if 'file' in request.files:
-            f = request.files['file']
-            if f.filename == '':
-                f = None
-        if not f:
+        if 'file' in request.files and request.files['file'].filename != '':
+            f = TextIOWrapper(request.files['file'])
+        else:
             os.path.dirname(os.path.abspath(__file__))
             f = open(
                 '{0}{1}sample_data{1}fruits_and_vegetables.csv'.format(
