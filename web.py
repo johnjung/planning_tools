@@ -1,7 +1,6 @@
 import csv
 import os
 from flask import Flask, flash, make_response, render_template, request
-from io import StringIO
 from planning_tools.classes import Matrix
 from werkzeug.utils import secure_filename
 
@@ -30,10 +29,7 @@ def home():
         m = Matrix()
         m.import_from_csv(f)
         m.cluster(request.form['linkage_method'])
-        s = StringIO()
-        csv_writer = csv.writer(s)
-        csv_writer.writerows(m.csv())
-        output = make_response(s.getvalue())
+        output = make_response(m.csv())
         output.headers["Content-Disposition"] = "attachment; filename=export.csv"
         output.headers["Content-type"] = "text/csv"
         return output
