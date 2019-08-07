@@ -12,7 +12,7 @@ def flatten_list(nested_list):
 
 def is_symmetric(matrix):
     if len(matrix) != len(matrix[0]):
-        return false
+        return False
     for y in range(len(matrix)):
         for x in range(len(matrix)):
             if x < y:
@@ -54,15 +54,18 @@ def reorder_matrix(matrix, order_x, order_y):
 def remove_row_col(matrix, i):
     assert is_symmetric(matrix)
     new_matrix = [[0 for i in range(len(matrix) - 1)] for j in range(len(matrix) - 1)]
-    for y1 in len(matrix):
+    for y1 in range(len(matrix)):
         if y1 == i:
             continue
-        new_arr.append([])
-        for x1 in len(matrix):
+        for x1 in range(len(matrix)):
             if x1 == i:
                 continue
-            y2 = y1 if y1 < i else y1 - 1
-            x2 = x1 if x1 < i else x1 - 1
+            y2 = y1
+            if y2 > i:
+                y2 -= 1
+            x2 = x1
+            if x2 > i:
+                x2 -= 1
             new_matrix[y2][x2] = matrix[y1][x1]
     return new_matrix
 
@@ -118,6 +121,8 @@ def get_clusters(delta_matrix, average):
         min_index = (0, 0)
         for j in range(len(delta_matrix)):
             for i in range(len(delta_matrix)):
+                if i >= j:
+                    continue
                 if min_value == None or delta_matrix[j][i] < min_value:
                     min_value = delta_matrix[j][i]
                     min_index = (j, i)
@@ -139,7 +144,7 @@ def get_clusters(delta_matrix, average):
             # append the summary to the end of each column. 
             delta_matrix[-1].append(summary)
         # add a zero value to the bottom right corner of array.
-        delta_matrix[-1][-1] = 0
+        delta_matrix[-1].append(0)
     
         # append sortArray with new values to match new_arr
         clusters, delta_matrix = build_cluster_and_modify_delta_matrix(
@@ -163,15 +168,19 @@ def build_cluster_and_modify_delta_matrix(clusters, delta_matrix, i1, i2):
         i1: index of row 1.
         i2: index of row 2.
     """
+    assert i1 != i2
     # if the two values to concatenate are single values...
+    print(i1)
+    print(i2)
+    print(clusters)
     if len(clusters[i1]) == 1 and len(clusters[i2]) == 1:
         # ...just cluster them
-        clusters.extend([clusters[i1][0], clusters[i2][0]])
+        clusters.append([clusters[i1][0], clusters[i2][0]])
     else:
         # get the index values to compare
         indices = [[None, None], [None, None]]
         # populate the upper left intersection of index array
-        indices[0][0] = distance_matrix[i1][0]
+        indices[0][0] = clusters[i1][0]
         # populate the upper right intersection of index array (if necessary)
         if len(clusters[i1]):
             indices[0][1] = clusters[i1][-1]
@@ -182,12 +191,13 @@ def build_cluster_and_modify_delta_matrix(clusters, delta_matrix, i1, i2):
             indices[1][1] = clusters[i2][-1]
         # lookup the intersections of the index values in the distance matrix
         values = [[None, None], [None, None]]
-        for j, i in ((0, 0), (0, 1), (1, 0), (1, 1)):
-            pass
-            '''
-            if indices[j][i] != None:
-                values[j][i] = delta_matrix[[indices[
-            '''
+        values[0][0] = delta_matrix[indices[0][0]][indices[1][0]]
+        if indices[0][1] != None:
+            values[0][1] = delta_matrix[indices[0][1]][indices[1][0]]
+        if indices[1][1] != None:
+            values[1][0] = delta_matrix[indices[0][0]][indices[1][1]]
+        if indices[0][1] != None and indices[1][1] != None:
+            values[1][1] = delta_matrix[indices[0][1]][indices[1][1]]
 
         # find the index of the lowest value in the value array
         lowest = values[0][0]
@@ -203,13 +213,14 @@ def build_cluster_and_modify_delta_matrix(clusters, delta_matrix, i1, i2):
         # create the new concatenation based on which
         # index of intValue was the lowest
             if low_row == 0 and low_col == 0:
-                clusters.extend([intRow1[-1], intRow2[-1]])
+                clusters.append([clusters[i1][-1], clusters[i2][-1]])
             elif low_row == 0 and low_col == 1:
-                clusters.extend([intRow1[0], intRow2[0]])
+                clusters.append([clusters[i1][0], clusters[i2][0]])
             elif low_row == 1 and low_col == 0:
-                clusters.extend([intRow1[-1], intRow2[-1]])
+                clusters.append([clusters[i1][-1], clusters[i2][-1]])
             else:
-                clusters.extend([intRow1[0], intRow2[-1]])
+                clusters.append([clusters[i1][0], clusters[i2][-1]])
+
     if i1 < i2:
         delta_matrix = remove_row_col(delta_matrix, i1)
         delta_matrix = remove_row_col(delta_matrix, i2)
@@ -225,6 +236,7 @@ def build_cluster_and_modify_delta_matrix(clusters, delta_matrix, i1, i2):
 if __name__ == '__main__':
     # use fruits and vegetables sample data. 
     matrix = [[1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.25, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.25, 0.0, 0.0], [0.0, 1.0, 0.0, 0.25, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.75, 0.0, 0.0, 0.0, 0.25, 0.0, 0.0, 0.25, 0.0, 0.75, 0.0, 0.0, 0.0, 0.0, 0.25, 0.75, 0.0, 0.0, 0.25, 0.25], [0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.25, 0.25, 0.5, 0.0, 0.0, 0.25, 0.25, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.25, 0.25, 0.0, 0.25, 0.0, 0.0, 0.25, 0.0, 0.0, 0.0], [0.0, 0.25, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.25, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.5, 0.0, 0.25, 0.0, 0.0, 0.0, 0.0, 0.0, 0.25, 0.0, 0.0, 0.0, 0.5], [0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.25, 0.0, 0.0, 0.25, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.25, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.75, 0.0, 0.0, 0.25, 0.0, 0.0, 0.0, 0.0, 0.25, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.25, 0.0, 0.0, 0.25, 1.0, 0.25, 0.25, 0.0, 0.0, 0.25, 0.25, 0.0, 0.0, 0.25, 0.0, 0.0, 0.75, 0.0, 0.25, 0.25, 0.0, 0.5, 0.0, 0.0, 0.25, 0.0, 0.0, 0.0], [0.0, 0.0, 0.25, 0.0, 0.0, 0.0, 0.25, 1.0, 0.25, 0.25, 0.0, 0.25, 0.75, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.25, 0.5, 0.0, 0.25, 0.0, 0.0, 0.25, 0.0, 0.0, 0.0], [0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.25, 0.25, 1.0, 0.25, 0.0, 0.5, 0.25, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.25, 0.25, 0.0, 0.25, 0.0, 0.0, 0.25, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.25, 0.25, 1.0, 0.0, 0.5, 0.25, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.75, 0.25, 0.0, 0.25, 0.0, 0.0, 0.25, 0.0, 0.0, 0.0], [0.0, 0.75, 0.0, 0.25, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.25, 0.0, 0.0, 0.25, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.25, 0.75, 0.0, 0.25, 0.25, 0.25], [0.0, 0.0, 0.25, 0.0, 0.0, 0.0, 0.25, 0.25, 0.5, 0.5, 0.0, 1.0, 0.25, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.25, 0.0, 0.25, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0], [0.0, 0.0, 0.25, 0.0, 0.0, 0.0, 0.25, 0.75, 0.25, 0.25, 0.0, 0.25, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.25, 0.5, 0.0, 0.25, 0.0, 0.0, 0.25, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.25, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.25, 0.0, 0.0, 0.25, 0.0, 0.0], [0.0, 0.25, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.25, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.75, 0.0, 0.25, 0.0, 0.0, 0.25, 0.0, 0.25, 0.5, 0.0, 0.25, 0.25, 0.5], [0.0, 0.0, 0.0, 0.0, 0.0, 0.75, 0.25, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.25, 0.0, 0.0, 0.0, 0.0, 0.25, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0], [0.25, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.25, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.25, 0.0], [0.0, 0.25, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.25, 0.0, 0.0, 0.0, 0.75, 0.0, 0.0, 1.0, 0.0, 0.25, 0.0, 0.0, 0.25, 0.0, 0.25, 0.5, 0.0, 0.25, 0.25, 0.75], [0.0, 0.0, 0.0, 0.0, 0.0, 0.25, 0.75, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.25, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.25, 0.0, 0.0, 0.25, 0.0, 0.0, 0.0], [0.0, 0.75, 0.0, 0.25, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0, 0.25, 0.0, 0.0, 0.25, 0.0, 1.0, 0.0, 0.0, 0.25, 0.0, 0.25, 0.75, 0.0, 0.25, 0.25, 0.25], [0.0, 0.0, 0.25, 0.0, 0.0, 0.0, 0.25, 0.25, 0.25, 0.75, 0.0, 0.5, 0.25, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.5, 0.0, 0.25, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0], [0.0, 0.0, 0.25, 0.0, 0.0, 0.0, 0.25, 0.5, 0.25, 0.25, 0.0, 0.25, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.5, 1.0, 0.0, 0.25, 0.0, 0.0, 0.25, 0.0, 0.0, 0.0], [0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.25, 0.0, 0.0, 0.25, 0.0, 0.25, 0.0, 0.0, 1.0, 0.0, 0.0, 0.25, 0.0, 0.25, 0.25, 0.25], [0.0, 0.0, 0.25, 0.0, 0.25, 0.25, 0.5, 0.25, 0.25, 0.25, 0.0, 0.25, 0.25, 0.0, 0.0, 0.25, 0.0, 0.0, 0.25, 0.0, 0.25, 0.25, 0.0, 1.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.0], [0.0, 0.25, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.25, 0.0, 0.0, 0.25, 0.25, 0.0, 0.0, 0.25, 0.0, 0.25, 0.0, 0.0, 0.0, 0.0, 1.0, 0.25, 0.0, 0.5, 0.25, 0.0], [0.0, 0.75, 0.0, 0.25, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.75, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.5, 0.0, 0.75, 0.0, 0.0, 0.25, 0.0, 0.25, 1.0, 0.0, 0.25, 0.25, 0.5], [0.0, 0.0, 0.25, 0.0, 0.25, 0.0, 0.25, 0.25, 0.25, 0.25, 0.0, 0.5, 0.25, 0.0, 0.0, 0.0, 0.0, 0.0, 0.25, 0.0, 0.5, 0.25, 0.0, 0.5, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0], [0.25, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.25, 0.0, 0.0, 0.25, 0.25, 0.0, 0.0, 0.25, 0.0, 0.25, 0.0, 0.0, 0.25, 0.0, 0.5, 0.25, 0.0, 1.0, 0.25, 0.25], [0.0, 0.25, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.25, 0.0, 0.0, 0.0, 0.25, 0.0, 0.25, 0.25, 0.0, 0.25, 0.0, 0.0, 0.25, 0.0, 0.25, 0.25, 0.0, 0.25, 1.0, 0.25], [0.0, 0.25, 0.0, 0.5, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.25, 0.0, 0.0, 0.0, 0.5, 0.0, 0.0, 0.75, 0.0, 0.25, 0.0, 0.0, 0.25, 0.0, 0.0, 0.5, 0.0, 0.25, 0.25, 1.0]]
+
 
     # cluster matrix.
     matrix = cluster(matrix, True)
