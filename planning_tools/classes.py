@@ -613,6 +613,31 @@ class Matrix:
             self.data = numpy.array(data)
         self.fill()
 
+    def import_labels(self, x_labels, y_labels):
+        """Imports lists of labels.
+
+        Args:
+            x_labels:
+            y_labels:
+        """
+        self.x_labels = x_labels
+        self.y_labels = y_labels
+        if self.x_labels == self.y_labels:
+            self.data = numpy.identity(len(self.x_labels))
+        else:
+            self.data = numpy.zeros(len(self.y_labels), len(self.x_labels))
+
+    def import_data(self, comparisons):
+        """
+        Args:
+            comparisons is a dictionary...x_label, y_label, comparison.
+        """
+        for c in comparisons:
+            self.data[
+                self.y_labels.index(c.y_label),
+                self.x_labels.index(c.x_label)
+            ] = c.comparison
+
     def width(self):
         return self.data.shape[1]
 

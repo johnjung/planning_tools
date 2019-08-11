@@ -1,0 +1,78 @@
+<meta charset="UTF-8"> 
+<style>
+body {
+    height: 100%;
+    margin: 0;
+}
+div.comparison {
+    height: 25vh;
+    left: 0;
+    position: absolute;
+    width: 100%;
+}
+div#compare_0 {
+    background: rgb(255, 255, 255);
+    top: 0;
+}
+div#compare_1 {
+    background: rgb(220, 220, 220);
+    top: 25%;
+}
+div#compare_2 {
+    background: rgb(195, 195, 195);
+    top: 50%;
+}
+div#compare_3 {
+    background: rgb(170, 170, 170);
+    top: 75%;
+}
+h1 {
+    left: 0;
+    margin: -.5em 0 0 0;
+    position: absolute;
+    text-align: center;
+    top: 50%;
+    width: 100%;
+    z-index: 2;
+}
+html {
+    height: 100%;
+    margin: 0;
+}
+h2 {
+    margin-left: 1em;
+}
+p {
+    bottom: 0;
+    left: 0;
+    position: absolute;
+    text-align: center;
+    width: 100%;
+    z-index: 2;
+}
+</style>
+<body>
+<h1><span id="label_one">{{ label_one }}</span> vs. <span id="label_two">{{ label_two }}</span></h1>
+  <div id="comparisons">
+  <div class="comparison" id="compare_0"><h2>0 &mdash; very dissimilar</h2></div>
+  <div class="comparison" id="compare_1"><h2>1 &mdash; dissimilar</h2></div>
+  <div class="comparison" id="compare_2"><h2>2 &mdash; similar</h2></div>
+  <div class="comparison" id="compare_3"><h2>3 &mdash; very similar</h2></div>
+</div>
+<p><em>Tap or click the appropriate area on your screen to compare these items.</em></p>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script type="text/javascript">
+$('body').on('click touch', function(e) {
+    $.post(
+        'http://localhost:5000/compare',
+        {
+            'label_one': $('#label_one').text(),
+            'label_two': $('#label_two').text(),
+            'comparison': Math.floor(e.clientY / $(window).height() * 4.0)
+        },
+        function() {
+            location.reload();
+        }
+    );
+});
+</script>

@@ -1,5 +1,7 @@
 docopt
 flask
+flask-sqlalchemy
 graphviz
 openpyxl
 scipy
+sqlalchemy
