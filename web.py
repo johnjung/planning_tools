@@ -8,6 +8,41 @@ from planning_tools.classes import Matrix
 
 app = Flask(__name__)
 
+def all_labels():
+    conn = sqlite3.connect(
+        os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            'insightmatrix.db'
+        )
+    )
+    cur = conn.cursor()
+    cur.execute("SELECT label.label FROM label;")
+    labels = []
+    for label in cur.fetchall():
+        labels.append(label[0])
+    conn.close()
+    return labels
+
+def all_comparisons():
+    conn = sqlite3.connect(
+        os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            'insightmatrix.db'
+        )
+    )
+    cur = conn.cursor()
+    cur.execute("""SELECT label_one.label, label_two.label, comparison.comparison
+                   FROM comparison 
+                   JOIN label label_one 
+                   ON comparison.label_one_id=label_one.id 
+                   JOIN label label_two 
+                   ON comparison.label_two_id=label_two.id;""")
+    comparisons = []
+    for c in cur.fetchall():
+        comparisons.append((c[0], c[1], c[2]))
+    conn.close()
+    return comparisons
+
 # Display the current state of the matrix on the homepage. (look at this part
 # on a projector.)
 @app.route('/')
@@ -27,42 +62,35 @@ def compare():
     cur = conn.cursor()
 
     def all_comparisons_present():
-        label_count = len(Label.query.all())
-        comparison_count = len(Comparison.query.all())
-        max_comparison_count = sum([i + 1 for i in range(label_count)])
-        return comparison_count == max_comparison_count
+        return len(all_comparisons()) == sum([i + 1 for i in range(len(all_labels()))])
 
     def comparison_present(label_one, label_two):
-        for c in Comparison.query.all():
-            sys.stdout.write(c) 
-            if c.label_one.label == request.form.get('label_one') and \
-                c.label_two.label == request.form.get('label_two'):
+        for c in all_comparisons():
+            if c[0] == request.form.get('label_one') and c[1] == request.form.get('label_two'):
                 return True
-            if c.label_one.label == request.form.get('label_two') and \
-                c.label_two.label == request.form.get('label_one'):
+            if c[0] == request.form.get('label_two') and c[1] == request.form.get('label_one'):
                 return True
         return False
  
     if request.method == 'POST':
-        if not comparison_present(
-            request.form.get('label_one'),
-            request.form.get('label_two')
-        ):
-            db.session.add(
-                Comparison(
-                    label_one_id=request.form.get('label_one'),
-                    label_two_id=request.form.get('label_two'),
-                    comparison=int(request.form.get('comparison'))
+        if not comparison_present(request.form.get('label_one'), request.form.get('label_two')):
+            cur.execute("""INSERT INTO comparison (id, label_one_id, label_two_id, comparison)
+                           SELECT NULL, label_one.id, label_two.id, ?
+                           FROM label label_one, label label_two
+                           WHERE label_one.label=? AND label_two.label=?;""", 
+                (
+                    request.form.get('label_one'),
+                    request.form.get('label_two'),
+                    request.form.get('comparison')
                 )
             )
-            db.session.commit()
+            conn.commit()
 
     if all_comparisons_present():
         return render_template('compare_no_more_comparisons.html')
     else:
         m = Matrix()
-        cur.execute('SELECT label FROM label;')
-        labels = [row[0] for row in cur.fetchall()]
+        labels = all_labels()
 
         # m.import_labels(labels, labels)
 
@@ -73,9 +101,8 @@ def compare():
                 comparisons.add((label_one, label_two))
 
         # remove the comparisons that are present in the database.
-        for c in Comparison.query.all():
-            sys.stdout.write(c.label_one.label)
-            comparisons.discard((c.label_one.label, c.label_two.label))
+        for c in all_comparisons():
+            comparisons.discard((c[0], c[1]))
 
         # select two remaining elements at random.
         comparisons = list(comparisons)
@@ -103,8 +130,8 @@ def json():
     m = Matrix()
     # m.import_labels([l.label for l in Label.query.all()])
 
-    labels = []
-    comparisons = []
+    labels = all_labels()
+    comparisons = all_comparisons()
 
     # m.import_data(comparisons)
     # how processor-intensive is this? do I need a timestamp for the last time
