@@ -55,7 +55,7 @@ def add_comparison(label_one, label_two, comparison):
                    SELECT NULL, label_one.id, label_two.id, ?
                    FROM label label_one, label label_two
                    WHERE label_one.label=? AND label_two.label=?;""", 
-        (label_one, label_two, comparison)
+        (comparison, label_one, label_two)
     )
     conn.commit()
     conn.close()

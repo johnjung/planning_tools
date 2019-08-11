@@ -51,7 +51,7 @@ text {
       for (var c=0; c < comparisons.length; c++) {
         if ((comparisons[c][0] == label_one && comparisons[c][1] == label_two) ||
             (comparisons[c][0] == label_two && comparisons[c][1] == label_one)) {
-          return comparisons[c].comparison; 
+          return parseFloat(comparisons[c][2]) / 4.0;
         }
       }
       return 0;
