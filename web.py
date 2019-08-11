@@ -43,6 +43,23 @@ def all_comparisons():
     conn.close()
     return comparisons
 
+def add_comparison(label_one, label_two, comparison):
+    conn = sqlite3.connect(
+        os.path.join(
+            os.path.dirname(os.path.abspath(__file__)),
+            'insightmatrix.db'
+        )
+    )
+    cur = conn.cursor()
+    cur.execute("""INSERT INTO comparison (id, label_one_id, label_two_id, comparison)
+                   SELECT NULL, label_one.id, label_two.id, ?
+                   FROM label label_one, label label_two
+                   WHERE label_one.label=? AND label_two.label=?;""", 
+        (label_one, label_two, comparison)
+    )
+    conn.commit()
+    conn.close()
+
 # Display the current state of the matrix on the homepage. (look at this part
 # on a projector.)
 @app.route('/')
@@ -74,17 +91,7 @@ def compare():
  
     if request.method == 'POST':
         if not comparison_present(request.form.get('label_one'), request.form.get('label_two')):
-            cur.execute("""INSERT INTO comparison (id, label_one_id, label_two_id, comparison)
-                           SELECT NULL, label_one.id, label_two.id, ?
-                           FROM label label_one, label label_two
-                           WHERE label_one.label=? AND label_two.label=?;""", 
-                (
-                    request.form.get('label_one'),
-                    request.form.get('label_two'),
-                    request.form.get('comparison')
-                )
-            )
-            conn.commit()
+            add_comparison(request.form.get('label_one'), request.form.get('label_two'), request.form.get('comparison'))
 
     if all_comparisons_present():
         return render_template('compare_no_more_comparisons.html')
