@@ -197,6 +197,6 @@ There are many ways to contribute to this software- your pull requests, bug
 reports, feature requests, sample data sets, and use cases are all very
 welcome.  Please contact the author for more information. 
 
-## Author
+## author
 
 John Jung
