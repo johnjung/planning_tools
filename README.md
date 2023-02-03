@@ -172,7 +172,7 @@ This script takes similarity data, similar to what Charles Owen described in
 his book Structured Planning, and converts it to a similarity matrix. 
 
 For an example of how to structure this data, see
-[sample_data/chairs.csv](./sample_data/chairs.csv). (This example is from pg. 146 
+[sample_data/chairs.csv](./sample_data/chairs.csv). (This example is from p. 146 
 of Structured Planning.)
 
 Data files should contain headers for each column of data, and a label for each
